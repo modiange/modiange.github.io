@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>好看视频大赏-正在观看视频</title>
+    <style>
+        body {
+            background-color: #f2f2f2;
+            color: #333;
+            font-family: "得意黑";
+            src:url('./font/font.woff2') format('woff2'),
+                url('./font/font.ttf') format('ttf'),
+                url('./font/font.otf') format('otf');
+            text-align: center;
+            padding-top: 50px;
+            animation: fadeIn 1s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        h1 {
+            font-size: 48px;
+            margin-bottom: 30px;
+            color: #afcaf7;
+        }
+        video {
+            width: 80%;
+            max-width: 8000px;
+            height: 90%;
+            max-height: 600px;
+            margin: 0 auto;
+            display: block;
+            border-radius: 5px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+            transition: all 0.2s ease-in-out;
+        }
+        video:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+        }
+        .btn {
+            padding: 1.3em 3em;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+            color: #000;
+            background-color: #fff;
+            border: none;
+            border-radius: 45px;
+            box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease 0s;
+            cursor: pointer;
+            outline: none;
+        }
+        .btn:hover{
+            background-color: #a7c0ea;
+            box-shadow: 0px 15px 20px rgba(46, 229, 157, 0.4);
+            color: #fff;
+            transform: translateY(-7px);
+        }
+        .btn:active {
+            transform: translateY(-1px);
+        }
+        /* 禁止文字选中 */
+        body, p, h1, h2, h3, h4, h5, h6, img {
+            -webkit-user-select: none; 
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        /* 禁止图片拖动 */
+        img {
+            -webkit-user-drag: none;
+        }
+    </style>
+</head>
+<body>
+    <h1 id="videoTitle">我叫标题</h1> <!-- 新增：显示视频标题 -->
+    <video autoplay="autoplay" id="myVideo" width="640" height="360" controls>
+        <p>你的浏览器不支持html5视频播放器，<a href="https://www.google.cn/chrome">点我下载谷歌浏览器，保真！</a></p>
+        <p>Your browser doesn't support HTML5 video player.<a href="https://www.chrome.com">Click me to download Google Chrome to ensure that it is true!</a></p>
+    </video>
+    <div>
+        <p id="tips">↑键音量加10%，↓键音量减10%，←键退后5秒，→键快进10秒。</p>
+        <button class="btn" onclick="window.location.href='index.html'">回到首页</button>
+        <button class="btn" onclick="skip()">跳转到精彩片段</button>
+        <button class="btn" onclick="shoucang()">收藏</button>
+        <button class="btn" id="sx" onclick="location.reload()">换一个</button>
+    </div>
+    <script>
+        var video = document.getElementById('myVideo');
+        var videoTitle = document.getElementById('videoTitle');
+        var hash = window.location.hash;
+        var discover = document.getElementById("sx");
+        var tips = document.getElementById("tips");
+        var jcpd = 0;
+        if(hash==='#discover'){
+            hash="#"+Math.ceil(Math.random()*19); 
+            discover.style.display = "block";
+        }else{
+            discover.style.display = "none";
+        }
+        if (hash === '#1') {
+            video.src = 'video/----------掠夺----------.mp4';
+            video.title = '----------掠夺----------';
+            jcpd=140;
+        } else if (hash === '#2'){
+            video.src = 'video/搞笑视频1.mp4';
+            video.title = '搞笑视频1';
+            jcpd=40;
+        } else if (hash === '#3'){
+            video.src = 'video/搞笑视频2.mp4';
+            video.title = '搞笑视频2';
+            jcpd=4;
+        }else if (hash === '#4'){
+            video.src = 'video/好，想骂你。.mp4';
+            video.title = '好，想骂你。';
+            jcpd=48;
+        }else if (hash === '#5'){
+            video.src = 'video/我好悲伤.mp4';
+            video.title = '我好悲伤';
+            jcpd=14;
+        }else if(hash === '#6'){
+            video.src = 'video/我扇你脸了.mp4';
+            video.title = '我扇你脸了';
+            jcpd=34;
+        }else if(hash === '#7'){
+            video.src = 'video/小胖跳舞.mp4';
+            video.title = '小胖跳舞';
+            jcpd=10;
+        }else if(hash ==='#8'){
+            video.src = 'video/一非洲帅哥在BBC干了件事.mp4';
+            video.title = '一非洲帅哥在BBC干了件事';
+            jcpd=32;
+        }else if(hash === '#9'){
+            video.src = 'video/一火柴人斗舞火爆全网.mp4';
+            video.title = '一火柴人斗舞火爆全网';
+            jcpd=0;
+        }else if(hash === '#10'){
+            video.src = 'video/音乐.mp4';
+            video.title = '音乐';
+            jcpd=38;
+        }else if(hash === '#11'){
+            video.src = 'video/Emotional Damge.mp4';
+            video.title = 'Emotional Damge';
+            jcpd=67;
+        }else if(hash === '#12'){
+            video.src = 'video/nice!.mp4';
+            video.title = 'nice！';
+            jcpd=13;
+        }else if(hash === '#13'){
+            video.src = 'video/2015动画春晚.mp4';
+            video.title = '2015动画春晚';
+            jcpd=13;
+        }else if(hash === '#14'){
+            video.src = 'video/学校停电了.mp4';
+            video.title = '学校停电了';
+            jcpd=36;
+        }else if(hash === '#15'){
+            video.src = 'video/iWurenji 14 Pro Max.mp4';
+            video.title = 'iWurenji 14 Pro Max';
+            jcpd=3;
+        }else if(hash === '#16'){
+            video.src = 'video/这条视频将看哭中国14亿人.mp4';
+            video.title = '这条视频将看哭中国14亿人';
+            jcpd=0;
+        }else if(hash === '#17'){
+            video.src = 'video/世界上最好听的歌曲！.mp4';
+            video.title = '世界上最好听的歌曲！';
+            jcpd=36;
+        }else if(hash === '#18'){
+            video.src = 'video/我是梁志超他奶奶.mp4';
+            video.title = '我是梁志超他奶奶';
+            jcpd=7;
+        }else if(hash === '#19'){
+            video.src = 'video/还是PVP大佬.mp4';
+            video.title = '还是PVP大佬';
+            jcpd=37;
+        }else if(hash === '#20'){
+            video.src = 'video/噪音代言人.mp4';
+            video.title = '噪音代言人';
+            jcpd=16;
+            alert('好看视频大赏提醒您：此视频音量较高，且有爆音效果，我们已为您调低音量。若您想用高音量播放，请摘下耳机，并且不要在公共场合大声播放此视频。')
+            alert('NB:The volume of this video is high and we have reduced the volume for you. If you want to play it at a higher volume, please remove your headphones and do not play this video loudly in public.')
+            video.volume=0.05;
+        }else{
+            video.src = 'null.mp4';
+            video.title = '输入的编号无效';
+        }
+        videoTitle.textContent = video.title;
+        function shoucang(){
+            alert('收藏失败！')
+        };
+        document.addEventListener('contextmenu', function(e) {
+            e.preventDefault(); // 禁止右键菜单
+        });
+        document.onkeydown = function(event) {
+            if (event.key === 'F12' || event.keyCode === 123) {
+                event.preventDefault();
+                return false;
+            }
+        };
+        function skip(){
+            video.currentTime =jcpd;
+            video.play();
+        };
+        document.addEventListener('keydown', function(event) {
+            switch (event.key) {
+                case 'ArrowUp':
+                    // 增加音量，但不超过1
+                    video.volume = Math.min(video.volume + 0.1, 1);
+                    break;
+                case 'ArrowDown':
+                    // 减小音量，但不低于0
+                    video.volume = Math.max(video.volume - 0.1, 0);
+                    break;
+                case 'ArrowLeft':
+                    // 后退5秒，但不早于视频开始
+                    video.currentTime = Math.max(video.currentTime - 5, 0);
+                    break;
+                case 'ArrowRight':
+                    // 前进10秒，但不超过视频总长度
+                    video.currentTime = Math.min(video.currentTime + 10, video.duration);
+                    break;
+                case ' ':
+                    // 空格键按下时，暂停或继续播放视频
+                    if (video.paused || video.ended) {
+                        video.play();
+                    } else {
+                        video.pause();
+                    }
+                    event.preventDefault();
+                    break;
+                default:
+                    // 其他按键不做处理
+                    return;
+            }
+            // 阻止默认行为，比如页面滚动
+            event.preventDefault();
+        });
+        //tips
+        var originalText = "↑键音量加10%，↓键音量减10%，←键退后5秒，→键快进10秒。"; // 原始文本内容
+        var volumeChangeTimeout=0; // 用于存储音量调整定时器的变量
+        var seekChangeTimeout=0; // 用于存储快进快退定时器的变量
+        document.addEventListener('keydown', function(event) {
+            switch (event.key) {
+                case 'ArrowUp':
+                    video.volume = Math.min(video.volume + 0.1, 1);
+                    tips.textContent = "音量增加10%";
+                    clearTimeout(volumeChangeTimeout);
+                    volumeChangeTimeout = setTimeout(function() {
+                        tips.textContent = originalText;
+                    }, 2000);
+                    break;
+                case 'ArrowDown':
+                    video.volume = Math.max(video.volume - 0.1, 0);
+                    tips.textContent = "音量减少10%";
+                    clearTimeout(volumeChangeTimeout);
+                    volumeChangeTimeout = setTimeout(function() {
+                        tips.textContent = originalText;
+                    }, 2000);
+                    break;
+                case 'ArrowLeft':
+                    video.currentTime = Math.max(video.currentTime - 5, 0);
+                    tips.textContent = "视频后退5秒";
+                    clearTimeout(seekChangeTimeout);
+                    seekChangeTimeout = setTimeout(function() {
+                        tips.textContent = originalText;
+                    }, 2000);
+                    break;
+                case 'ArrowRight':
+                    video.currentTime = Math.min(video.currentTime + 10, video.duration);
+                    tips.textContent = "视频前进10秒";
+                    clearTimeout(seekChangeTimeout);
+                    seekChangeTimeout = setTimeout(function() {
+                        tips.textContent = originalText;
+                    }, 2000);
+                    break;
+                case ' ':
+                    if (video.paused || video.ended) {
+                        video.play();
+                    } else {
+                        video.pause();
+                    }
+                    break;
+                default:
+                    return;
+            }
+        });
+    </script>
+</body>
+</html>

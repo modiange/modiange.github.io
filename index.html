@@ -4,12 +4,16 @@
 <head>
     <title>好看视频大赏</title>
     <style>
+        @font-face {
+            font-family: "得意黑";
+            src: url('./font/font.woff2') format('woff2'),
+                url('./font/font.ttf') format('truetype'),
+                url('./font/font.otf') format('opentype');
+        }
+
         body {
             background-color: #f2f2f2;
             font-family: "得意黑";
-            src: url('./font/font.woff2') format('woff2'),
-                url('./font/font.ttf') format('ttf'),
-                url('./font/font.otf') format('otf');
             animation: fadeIn 1s ease-in-out;
         }
 
@@ -215,59 +219,40 @@
             fill: white;
             transform: scale(1.2);
         }
-        /* 联系 */
-        .buttonc {
-            font-size: 20px;
-            background: royalblue;
-            color: white;
-            padding: 0.7em 1em;
-            padding-left: 0.9em;
-            display: flex;
-            align-items: center;
-            border: none;
-            border-radius: 16px;
-            overflow: hidden;
-            transition: all 0.2s;
+        /* github */
+        .btng {
+            display: grid;
+            place-items: center;
+            background: #e3edf7;
+            padding: 1.4em;
+            border-radius: 10px;
+            box-shadow: 6px 6px 10px -1px rgba(0,0,0,0.15),
+                    -6px -6px 10px -1px rgba(255,255,255,0.7);
+            border: 1px solid rgba(0,0,0,0);
             cursor: pointer;
+            transition: transform 0.5s;
         }
 
-        .buttonc .spanc {
-            display: block;
-            margin-left: 0.3em;
-            transition: all 0.3s ease-in-out;
+        .btng:hover {
+            box-shadow: inset 4px 4px 6px -1px rgba(0,0,0,0.2),
+                    inset -4px -4px 6px -1px rgba(255,255,255,0.7),
+                    -0.5px -0.5px 0px rgba(255,255,255,1),
+                    0.5px 0.5px 0px rgba(0,0,0,0.15),
+                    0px 12px 10px -10px rgba(0,0,0,0.05);
+            border: 1px solid rgba(0,0,0,0.1);
+            transform: translateY(0.5em);
         }
 
-        .buttonc .svgc {
-            display: block;
-            transform-origin: center center;
-            transition: transform 0.3s ease-in-out;
+        .btng .svgg {
+            transition: transform 0.5s;
         }
 
-        .buttonc:hover .svg-wrapperc {
-            animation: fly-1 0.6s ease-in-out infinite alternate;
+        .btng:hover .svgg {
+            transform: scale(0.9);
+            fill: #333333;
         }
 
-        .buttonc:hover .svgc {
-            transform: translateX(1.2em) rotate(45deg) scale(1.1);
-        }
 
-        .buttonc:hover .spanc {
-            transform: translateX(5em);
-        }
-
-        .buttonc:active {
-            transform: scale(0.95);
-        }
-
-        @keyframes fly-1 {
-            from {
-                transform: translateY(0.1em);
-            }
-
-            to {
-                transform: translateY(-0.1em);
-            }
-        }
         /* 搜索 */
         .InputContainers {
             width: 210px;
@@ -325,27 +310,12 @@
         
             <span class="textd">发现</span>
         </button>
-        <!-- 联系 -->
-        <button class="buttonc" onclick="window.location.href='mailto:douyin123452022@163.com'">
-            <div class="svg-wrapper-1c">
-              <div class="svg-wrapperc">
-                <svg class="svgc"
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  width="24"
-                  height="24"
-                >
-                  <path fill="none" d="M0 0h24v24H0z"></path>
-                  <path
-                    fill="currentColor"
-                    d="M1.946 9.315c-.522-.174-.527-.455.01-.634l19.087-6.362c.529-.176.832.12.684.638l-5.454 19.086c-.15.529-.455.547-.679.045L12 14l6-8-8 6-8.054-2.685z"
-                  ></path>
-                </svg>
-              </div>
-            </div>
-            <span class="spanc">联系我们</span>
-          </button>   
         <!-- github -->
+        <button class="btng" onclick="window.location.href='https://github.com/modiange/modiange.github.io'">
+            <svg width="40" height="40" fill="#0092E4" class="svgg" xmlns="http://www.w3.org/2000/svg" data-name="Layer 1" viewBox="0 0 24 24" id="github">
+              <path d="M12,2.2467A10.00042,10.00042,0,0,0,8.83752,21.73419c.5.08752.6875-.21247.6875-.475,0-.23749-.01251-1.025-.01251-1.86249C7,19.85919,6.35,18.78423,6.15,18.22173A3.636,3.636,0,0,0,5.125,16.8092c-.35-.1875-.85-.65-.01251-.66248A2.00117,2.00117,0,0,1,6.65,17.17169a2.13742,2.13742,0,0,0,2.91248.825A2.10376,2.10376,0,0,1,10.2,16.65923c-2.225-.25-4.55-1.11254-4.55-4.9375a3.89187,3.89187,0,0,1,1.025-2.6875,3.59373,3.59373,0,0,1,.1-2.65s.83747-.26251,2.75,1.025a9.42747,9.42747,0,0,1,5,0c1.91248-1.3,2.75-1.025,2.75-1.025a3.59323,3.59323,0,0,1,.1,2.65,3.869,3.869,0,0,1,1.025,2.6875c0,3.83747-2.33752,4.6875-4.5625,4.9375a2.36814,2.36814,0,0,1,.675,1.85c0,1.33752-.01251,2.41248-.01251,2.75,0,.26251.1875.575.6875.475A10.0053,10.0053,0,0,0,12,2.2467Z"></path>
+            </svg>
+        </button>
     </div>
     <div id="no-results" class="no-results" style="display: none;"></div>
     <div class="container">
@@ -393,7 +363,7 @@
                 <img src="photo/d.png">
             </div>
             <p class="card-title">好，想骂你。</p>
-            <p class="card-des">shabby</p>
+            <p class="card-des">吸D的是shabby</p>
             <div class="card-btn" onclick="window.location.href='lookvideo.html#4'">
                 <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 384 512" stroke-width="0" fill="currentColor" stroke="currentColor">
                     <path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"></path>
@@ -509,8 +479,8 @@
             <div class="card-image-container">
                 <img src="photo/m.png">
             </div>
-            <p class="card-title">2015动画春晚</p>
-            <p class="card-des">xswl</p>
+            <p class="card-title">哪里贵了？</p>
+            <p class="card-des">好好想想自己的原因</p>
             <div class="card-btn" onclick="window.location.href='lookvideo.html#13'">
                 <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 384 512" stroke-width="0" fill="currentColor" stroke="currentColor">
                     <path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"></path>
@@ -603,6 +573,19 @@
             <p class="card-title">噪音代言人</p>
             <p class="card-des">耳朵已经没了。</p>
             <div class="card-btn" onclick="window.location.href='lookvideo.html#20'">
+                <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 384 512" stroke-width="0" fill="currentColor" stroke="currentColor">
+                    <path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"></path>
+                </svg>
+                <span class="card-btn-text">立即观看</span>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-image-container">
+                <img src="photo/u.png">
+            </div>
+            <p class="card-title">菜！就多练！</p>
+            <p class="card-des">菜！就多练！</p>
+            <div class="card-btn" onclick="window.location.href='lookvideo.html#21'">
                 <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 384 512" stroke-width="0" fill="currentColor" stroke="currentColor">
                     <path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"></path>
                 </svg>

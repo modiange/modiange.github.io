@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>疑难解答-好看视频大赏</title>
+    <style>
+        @font-face {
+            font-family: "MiSans VF";
+            src: url('./font/misans.ttf') format('truetype'),
+        }
+        body {
+            font-family: "MiSans VF", sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #e0f7fa, #80deea);
+            box-sizing: border-box;
+            animation: fadeIn 1s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            color: skyblue;
+            margin: 0;
+        }
+
+        .button-container {
+            display: flex;
+        }
+
+        .button-container button {
+            padding: 10px 20px;
+            background-color: #a7c0ea;
+            color: azure;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-left: 10px;
+        }
+
+        .button-container button:hover {
+            background-color: skyblue;
+        }
+
+        .main-content {
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .sidebar {
+            flex: 1;
+            min-width: 250px;
+            max-width: 300px;
+            margin-right: 20px;
+            background-color: azure;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .content {
+            flex: 2;
+            min-width: 0;
+            background-color: azure;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .search-box {
+            margin-bottom: 20px;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid skyblue;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .question-list {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .question-list li {
+            background-color: azure;
+            margin-bottom: 10px;
+            padding: 15px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .question-list li:hover {
+            background: linear-gradient(45deg, #e6f0ff, #d6eaff);
+        }
+
+        .answer-container {
+            background-color: azure;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+            display: none;
+            word-wrap: break-word;
+        }
+
+        .answer-container img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                margin-right: 0;
+                margin-bottom: 20px;
+            }
+
+            .content {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body onload="showAnswer('answer0')">
+    <div class="container">
+        <div class="header">
+            <h1>疑难解答</h1>
+            <div class="button-container">
+                <button onclick="window.location.href='index.html'">返回首页</button>
+                <button onclick="window.location.href='helpen.html'">English</button>
+            </div>
+        </div>
+        <div class="main-content">
+            <div class="sidebar">
+                <div class="search-box">
+                    <input type="search" placeholder="搜索问题..." oninput="filterQuestions(this.value)">
+                </div>
+                <ul class="question-list">
+                    <li onclick="showAnswer('answer1')">我应该如何将好看视频大赏投屏到电视上？</li>
+                    <li onclick="showAnswer('answer2')">如何用二维码分享视频？</li>
+                    <li onclick="showAnswer('answer3')">为什么我使用收藏功能时显示“收藏失败”？</li>
+                    <li onclick="showAnswer('answer4')">好看视频大赏的视频都是从哪来的？</li>
+                    <li onclick="showAnswer('answer5')">为什么我在浏览modiange.github.io时很卡？</li>
+                    <li onclick="showAnswer('answer6')">好看视频大赏使用的字体是什么？</li>
+                </ul>
+            </div>
+            <div class="content">
+                <div id="answer0" class="answer-container">
+                    <h2>欢迎！</h2>
+                    <p>点击左边文字查看解答。</p>
+                    <img src="photo/welcome.png">
+                    <h3>热门问题</h3>
+                    <ul class="question-list">
+                        <li onclick="showAnswer('answer1')">我应该如何将好看视频大赏投屏到电视上？</li>
+                        <li onclick="showAnswer('answer3')">为什么我使用收藏功能时显示“收藏失败”？</li>
+                        <li onclick="showAnswer('answer4')">好看视频大赏的视频都是从哪来的？</li>
+                        <li onclick="showAnswer('answer6')">好看视频大赏使用的字体是什么？</li>
+                    </ul>
+                </div>
+                <div id="answer1" class="answer-container">
+                    <h2>我应该如何将好看视频大赏投屏到电视上？</h2>
+                    <p>若您想将视频投射到其他设备（如电视、显示器等），您可以参阅此教程。</p>
+                    <p>1.点击右上角三个点。</p>
+                    <img src="photo/help/toupin1.png" alt="点击右上角三个点">
+                    <p>2.在“保存并分享”内找到“投放…”。</p>
+                    <img src="photo/help/toupin2.png" alt="在“保存并分享”内找到“投放…”">
+                    <p>3.选择好您的设备后，即可开始投屏。</p>
+                    <img src="photo/help/toupin3.png" alt="选择好您的设备后，即可开始投屏">
+                </div>
+                <div id="answer2" class="answer-container">
+                    <h2>如何用二维码分享视频？</h2>
+                    <p>在观看到精彩的视频时，您肯定按耐不住，想分享给自己的朋友，您可以使用以下方式来分享（仅适用于Google Chrome）。</p>
+                    <p>1.点击右上角三个点。</p>
+                    <img src="photo/help/toupin1.png" alt="点击右上角三个点">
+                    <p>2.在“保存并分享”内找到“创建二维码”。</p>
+                    <img src="photo/help/qrcode1.png" alt="在“保存并分享”内找到“创建二维码”">
+                    <p>3.在弹出的窗口中，您可以复制或下载，然后转发给您的朋友，让您的朋友使用移动设备扫描此二维码。</p>
+                    <img src="photo/help/qrcode2.png" alt="在弹出的窗口中，您可以复制或下载，然后发布给您的朋友，让您的朋友使用移动设备扫描此二维码">
+                </div>
+                <div id="answer3" class="answer-container">
+                    <h2>为什么我使用收藏功能时显示“收藏失败”？</h2>
+                    <p>我根本就没做这个功能，怎么可能收藏成功？</p>
+                    <img src="photo/help/shoucangshibai1.png">
+                </div>
+                <div id="answer4" class="answer-container">
+                    <h2>好看视频大赏的视频都是从哪来的？</h2>
+                    <p>好看视频大赏中所有的视频都来自于以下的平台</p>
+                    <p>1.<a href="https://www.youtube.com" style="color: skyblue;">YouTube</a></p>
+                    <p>2.<a href="https://www.bilibili.com" style="color: skyblue;">Bilibili</a></p>
+                    <p>3.<a href="https://www.douyin.com/" style="color: skyblue;">抖音</a></p>
+                    <p>4.作者自制</p>
+                    <img src="photo/help/yuan1.png">
+                </div>
+                <div id="answer5" class="answer-container">
+                    <h2>为什么我在浏览modiange.github.io时很卡？</h2>
+                    <p>如果您在浏览modiange.github.io时很卡，通常是因为您的网络问题，您可以尝试使用DNS。</p>
+                    <img src="photo/help/dns1.png">
+                    <p>以windows11设备为例，其他设备可自行搜索。相关操作可能影响设备或其他软件的使用，请谨慎操作或寻求专业人士的帮助
+                        打开「系统设置」->「网络连接」
+                        打开「当前网络属性」->「internet协议版本4」
+                        设置DNS地址为114.114.114.114，并重启电脑</p>
+                    <p>您也可以设置成其他DNS地址，您可以参阅<a href="https://dnsdaquan.com/">DNS大全</a></p>
+                </div>
+                <div id="answer6" class="answer-container">
+                    <h2>好看视频大赏使用的字体是什么？</h2>
+                    <p>好看视频大赏使用的字体为</p>
+                    <p>1.得意黑（首页、观看视频处）</p>
+                    <img src="photo/help/smfont1.png" alt="1.得意黑（首页、观看视频处）">
+                    <p>2.MiSans VF（疑难解答处、发现功能）</p>
+                    <img src="photo/help/smfont2.png" alt="2.MiSans VF（疑难解答处）">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showAnswer(answerId) {
+            var answers = document.getElementsByClassName('answer-container');
+            for (var i = 0; i < answers.length; i++) {
+                answers[i].style.display = 'none';
+            }
+            document.getElementById(answerId).style.display = 'block';
+        }
+        function filterQuestions(searchTerm) {
+            var questionItems = document.querySelectorAll('.question-list li');
+
+            questionItems.forEach(function(item) {
+                var questionText = item.textContent.toLowerCase();
+                var searchTermLower = searchTerm.toLowerCase();
+
+                if (questionText.includes(searchTermLower)) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
+    </script>
+</body>
+</html>

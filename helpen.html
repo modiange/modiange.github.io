@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Help-Haovideo</title>
+    <style>
+        @font-face {
+            font-family: "MiSans VF";
+            src: url('./font/misans.ttf') format('truetype'),
+        }
+        body {
+            font-family: "MiSans VF", sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #e0f7fa, #80deea);
+            box-sizing: border-box;
+            animation: fadeIn 1s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            color: skyblue;
+            margin: 0;
+        }
+
+        .button-container {
+            display: flex;
+        }
+
+        .button-container button {
+            padding: 10px 20px;
+            background-color: #a7c0ea;
+            color: azure;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-left: 10px;
+        }
+
+        .button-container button:hover {
+            background-color: skyblue;
+        }
+
+        .main-content {
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .sidebar {
+            flex: 1;
+            min-width: 250px;
+            max-width: 300px;
+            margin-right: 20px;
+            background-color: azure;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .content {
+            flex: 2;
+            min-width: 0;
+            background-color: azure;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .search-box {
+            margin-bottom: 20px;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid skyblue;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .question-list {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .question-list li {
+            background-color: azure;
+            margin-bottom: 10px;
+            padding: 15px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .question-list li:hover {
+            background: linear-gradient(45deg, #e6f0ff, #d6eaff);
+        }
+
+        .answer-container {
+            background-color: azure;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+            display: none;
+            word-wrap: break-word;
+        }
+
+        .answer-container img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                margin-right: 0;
+                margin-bottom: 20px;
+            }
+
+            .content {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body onload="showAnswer('answer0')">
+    <div class="container">
+        <div class="header">
+            <h1>Help</h1>
+            <div class="button-container">
+                <button onclick="window.location.href='index.html'">Home</button>
+                <button onclick="window.location.href='help.html'">中文</button>
+            </div>
+        </div>
+        <div class="main-content">
+            <div class="sidebar">
+                <div class="search-box">
+                    <input type="search" placeholder="search..." oninput="filterQuestions(this.value)">
+                </div>
+                <ul class="question-list">
+                    <li onclick="showAnswer('answer1')">How should I cast the Haovideo to my TV?</li>
+                    <li onclick="showAnswer('answer2')">How do I share a video with a QR code?</li>
+                    <li onclick="showAnswer('answer3')">Why do I get Failed to favourite when I use the favourites function?</li>
+                    <li onclick="showAnswer('answer4')">Where do all the Haovideo videos come from?</li>
+                    <li onclick="showAnswer('answer5')">Why am I stuck browsing modiange.github.io?</li>
+                    <li onclick="showAnswer('answer6')">What is the font used for Haovideo?</li>
+                </ul>
+            </div>
+            <div class="content">
+                <div id="answer0" class="answer-container">
+                    <h2>Welcome！</h2>
+                    <p>Click on the text on the left to view the answer.</p>
+                    <img src="photo/welcome.png">
+                    <h3>Hot questions</h3>
+                    <ul class="question-list">
+                        <li onclick="showAnswer('answer1')">How should I cast the Haovideo to my TV?</li>
+                        <li onclick="showAnswer('answer3')">Why do I get Failed to favourite when I use the favourites function?</li>
+                        <li onclick="showAnswer('answer4')">Where do all the Haovideo videos come from?</li>
+                        <li onclick="showAnswer('answer6')">What is the font used for Haovideo?</li>
+                    </ul>
+                </div>
+                <div id="answer1" class="answer-container">
+                    <h2>How should I cast the Haovideo to my TV?</h2>
+                    <p>The text of the image may be in Chinese.</p>
+                    <p>If you want to project your video to other devices (e.g. TV, monitor, etc.), you can refer to this tutorial.</p>
+                    <p>1. Click the three dots in the upper right corner.</p>
+                    <img src="photo/help/toupin1.png" alt="Click the three dots in the upper right corner.">
+                    <p>2.Find "Cast..." under "Save and Share".</p>
+                    <img src="photo/help/toupin2.png" alt="Find "Cast..." under "Save and Share"">
+                    <p>3.Once you have selected your device, you can start casting.</p>
+                    <img src="photo/help/toupin3.png" alt="Once you have selected your device, you can start casting.">
+                </div>
+                <div id="answer2" class="answer-container">
+                    <h2>How do I share a video with a QR code?</h2>
+                    <p>The text of the image may be in Chinese.</p>
+                    <p>When you watch a wonderful video, you must be unable to resist and want to share it with your friends, you can use the following ways to share it (only for Google Chrome).</p>
+                    <p>1.Click on the three dots in the upper right corner.</p>
+                    <img src="photo/help/toupin1.png" alt="Click on the three dots in the upper right corner.">
+                    <p>2.Find "Create QR Code" under "Save and Share".。</p>
+                    <img src="photo/help/qrcode1.png" alt="Find "Create QR Code" under "Save and Share".">
+                    <p>3.In the pop-up window you can copy or download, then you can forward it to your friends and have them scan this QR code with their mobile devices.</p>
+                    <img src="photo/help/qrcode2.png" alt="In the pop-up window you can copy or download, then you can forward it to your friends and have them scan this QR code with their mobile devices.">
+                </div>
+                <div id="answer3" class="answer-container">
+                    <h2>Why do I get Failed to favourite when I use the favourites function?</h2>
+                    <p>The text of the image may be in Chinese.</p>
+                    <p>I didn't even do this feature, so how could the favourites work?</p>
+                    <img src="photo/help/shoucangshibai1.png">
+                </div>
+                <div id="answer4" class="answer-container">
+                    <h2>Where do all the Haovideo videos come from?</h2>
+                    <p>The text of the image may be in Chinese.</p>
+                    <p>All of the videos in the Haovideo come from the following platforms</p>
+                    <p>1.<a href="https://www.youtube.com" style="color: skyblue;">YouTube</a></p>
+                    <p>2.<a href="https://www.bilibili.com" style="color: skyblue;">Bilibili</a></p>
+                    <p>3.<a href="https://www.douyin.com/" style="color: skyblue;">Douyin</a></p>
+                    <p>4.self-restraint</p>
+                    <img src="photo/help/yuan1.png">
+                </div>
+                <div id="answer5" class="answer-container">
+                    <h2>Why am I stuck browsing modiange.github.io?</h2>
+                    <p>The text of the image may be in Chinese.</p>
+                    <p>If you're having a hard time browsing modiange.github.io, it's usually because of your internet connection, you can try using DNS.</p>
+                    <img src="photo/help/dns1.png">
+                    <p>Take windows 11 device as an example, other devices can be searched by yourself. The operation may affect the use of the device or other software, please operate with caution or seek professional help!
+                        Open System Settings -> Network Connections
+                        Open "Current Network Properties" -> "internet protocol version 4".
+                        Set the DNS address to 8.8.8.8 and restart the computer</p>
+                    <p>You can also set it to another DNS address.</p>
+                </div>
+                <div id="answer6" class="answer-container">
+                    <h2>What is the font used for Haovideo?</h2>
+                    <p>The text of the image may be in Chinese.</p>
+                    <p>The font used for Haovideo is</p>
+                    <p>1.得意黑（In the home , watch the video）</p>
+                    <img src="photo/help/smfont1.png">
+                    <p>2.MiSans VF（In the help, discover）</p>
+                    <img src="photo/help/smfont2.png">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showAnswer(answerId) {
+            var answers = document.getElementsByClassName('answer-container');
+            for (var i = 0; i < answers.length; i++) {
+                answers[i].style.display = 'none';
+            }
+            document.getElementById(answerId).style.display = 'block';
+        }
+        function filterQuestions(searchTerm) {
+            var questionItems = document.querySelectorAll('.question-list li');
+
+            questionItems.forEach(function(item) {
+                var questionText = item.textContent.toLowerCase();
+                var searchTermLower = searchTerm.toLowerCase();
+
+                if (questionText.includes(searchTermLower)) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
+    </script>
+</body>
+</html>

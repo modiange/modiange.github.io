@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>好看视频大赏-正在观看视频</title>
+    <title>观看视频中-好看视频大赏</title>
     <style>
         @font-face {
             font-family: "得意黑";
@@ -97,24 +97,21 @@
     <div>
         <p id="tips">↑键音量加10%，↓键音量减10%，←键退后5秒，→键快进10秒。</p>
         <div id="subtitle-container">这里将会显示这条视频的字幕。 The subtitles for this video will be displayed here.</div>
-        <button class="btn" onclick="window.location.href='index.html'">回到首页</button>
-        <button class="btn" onclick="skip()">跳转到精彩片段</button>
+        <button class="btn" onclick="javascript:history.back(-1)">返回</button>
+        <button class="btn" onclick="skip()">精彩片段</button>
         <button class="btn" onclick="shoucang()">收藏</button>
-        <button class="btn" id="sx" onclick="location.reload()">换一个(F5)</button>
+        <button class="btn" onclick="share()">分享</button>
+        <button class="btn" onclick="window.location.href='help.html'">疑难解答</button>
     </div>
     <script>
+        // 初始化
         var video = document.getElementById('myVideo');
         var videoTitle = document.getElementById('videoTitle');
         var hash = window.location.hash;
         var discover = document.getElementById("sx");
         var tips = document.getElementById("tips");
         var jcpd = 0;
-        if(hash==='#discover'){
-            hash="#"+Math.ceil(Math.random()*21); 
-            discover.style.display = "block";
-        }else{
-            discover.style.display = "none";
-        }
+        // 判断
         if (hash === '#1') {
             video.src = 'video/----------掠夺----------.mp4';
             video.title = '----------掠夺----------';
@@ -207,9 +204,14 @@
             video.title = '输入的编号无效';
         }
         videoTitle.textContent = video.title;
+        if(hash!='#20'){
+            video.volume=0.5;
+        }
+        // 收藏
         function shoucang(){
             alert('收藏失败！')
         };
+        // 禁止
         document.addEventListener('contextmenu', function(e) {
             e.preventDefault(); // 禁止右键菜单
         });
@@ -219,10 +221,12 @@
                 return false;
             }
         };
+        // 精彩片段
         function skip(){
             video.currentTime =jcpd;
             video.play();
         };
+        // 控制
         document.addEventListener('keydown', function(event) {
             switch (event.key) {
                 case 'ArrowUp':
@@ -831,6 +835,15 @@
 
         // 设置视频的事件监听器
         video.addEventListener('timeupdate', displaySubtitle);
+        //分享
+        function share(){
+            var hash = window.location.hash.substring(1);
+            if(hash){
+                alert('分享给你的朋友：https://modiange.github.io/lookvideo.html#'+hash);
+            }else{
+                alert('分享给你的朋友：https://modiange.github.io/lookvideo.html');
+            }
+        }
     </script>
 </body>
 </html>

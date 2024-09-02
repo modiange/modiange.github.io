@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>好看视频大赏</title>
+    <link rel="stylesheet" href="ui/newui.css">
+    <style>
+        /* 搜索 */
+        .sogroup {
+            line-height: 28px;
+            align-items: center;
+            max-width: 190px;
+            display: flex;
+            position: absolute;
+            right: 0;
+            margin-right: 20px;
+            margin-bottom: 10px;
+        }
+
+        .soinput {
+            width: 200px;
+            height: 40px;
+            line-height: 28px;
+            padding: 0 1rem;
+            padding-left: 2.5rem;
+            border: 2px solid transparent;
+            border-radius: 8px;
+            outline: none;
+            background-color: azure;
+            color: violet;
+            border-radius: 10px;
+        }
+
+        .soinput::placeholder {
+            color: violet;
+        }
+
+        .soinput:focus,
+        input:hover,input:valid{
+            outline: none;
+            border-color: rgba(234, 76, 137, 0.4);
+            background-color: #fff;
+            box-shadow: 0 0 0 4px rgb(234 76 137 / 10%);
+        }
+
+        .soicon {
+            position: absolute;
+            left: 1rem;
+            fill: #9e9ea7;
+            width: 1rem;
+            height: 1rem;
+        }
+        input[type=search]::-webkit-search-cancel-button{
+            -webkit-appearance: none;
+        }
+        .newsphoto{
+            height: 300px;
+            min-height: 300px;
+            max-height: 300px;
+            position: absolute;
+            top: 0;
+            margin-top: 75px;
+            margin-left: 99px;
+            width: 65vw;
+            border-radius: 20px;
+            box-shadow: 0px 20px 20px rgba(0, 0, 0, 0.1),
+            -4px -4px 12px rgba(0, 0, 0, 0.08);
+            border: 5px solid rgb(72, 100, 255);
+            cursor: pointer;
+            z-index: 999;
+            object-fit: cover;
+            max-width: 1222px;
+            min-width: 37.5vw;
+        }
+        .newstips{
+            left: 76vw;
+            position: absolute;
+            color: white;
+            background-color: rgba(0, 0, 0,0.6);
+            border-radius: 10px;
+            padding: 8px;
+        }
+    </style>
+</head>
+<body>
+    <header oncontextmenu=self.event.returnValue=false>
+        <img class="bg" id="bizhi" onload="document.getElementById('bizhi').style.animation='0.48s ease-in-out 0s 1 normal forwards running fadeIn'">
+    </header>
+    <div class="wrapper">
+        <div class="bar">
+            <!-- 已选中 -->
+            <!--<div class="barbutton" title="🏠首页" style="background: black;">
+                <p class="barbuttontext" style="color: white;">🏠</br>首页</p>
+            </div>-->
+            <p class="haovideologo" title="好看视频大赏-Haovideo" onclick="about()">好看视频大赏</p>
+            <div class="barbutton" title="🏠首页" style="background: black;">
+                <p class="barbuttonemoji">🏠</p>
+                <br>
+                <p class="barbuttontext" style="color: white;">首页</p>
+            </div>
+            <div class="barbutton" title="🗂分类" onclick="window.location.href='tags.html'">
+                <p class="barbuttonemoji">🗂</p>
+                <br>
+                <p class="barbuttontext">分类</p>
+            </div>
+            <div class="barbutton" title="🧐帮助" onclick="help()">
+                <p class="barbuttonemoji">🧐</p>
+                <br>
+                <p class="barbuttontext">帮助</p>
+            </div>
+            <div class="barbutton" title="👨‍💻源码" onclick="window.open('https://github.com/modiange/modiange.github.io')">
+                <p class="barbuttonemoji">👨‍💻</p>
+                <br>
+                <p class="barbuttontext">源码</p>
+            </div>
+            <div class="barbutton" title="🌅壁纸" onclick="laiyuan()" id="bzan">
+                <p class="barbuttonemoji" id="logobizhi">🌅</p>
+                <br>
+                <p class="barbuttontext">壁纸</p>
+            </div>
+        </div>
+        <div style="margin-right: 99px;"></div>
+        <div class="zhuyao" id="zhuyao"> 
+            <noscript>
+                <p id="nojs">你的浏览器不支持JavaScript，<a href="https://www.google.cn/chrome">点我下载谷歌浏览器，保真！</a></p>
+            </noscript>  
+            <p class="good" id="good">欢迎！</p>
+            <div class="container">
+                <div class="sogroup">
+                    <svg class="soicon" aria-hidden="true" viewBox="0 0 24 24"><g><path d="M21.53 20.47l-3.66-3.66C19.195 15.24 20 13.214 20 11c0-4.97-4.03-9-9-9s-9 4.03-9 9 4.03 9 9 9c2.215 0 4.24-.804 5.808-2.13l3.66 3.66c.147.146.34.22.53.22s.385-.073.53-.22c.295-.293.295-.767.002-1.06zM3.5 11c0-4.135 3.365-7.5 7.5-7.5s7.5 3.365 7.5 7.5-3.365 7.5-7.5 7.5-7.5-3.365-7.5-7.5z"></path></g></svg>
+                    <input placeholder="搜索视频…" type="search" class="soinput" onkeyup="searchFunction()" id="so" onkeydown="searchFunction()" maxlength="25">
+                </div>
+            </div>
+            <div id="no-results" class="no-results" style="display: block;"></div>
+            <div class="container">
+                <div class="card">
+                    <div class="card-image-container">
+                        <img src="photo/a.png">
+                    </div>
+                    <p class="card-title">----------掠夺----------</p>
+                    <p class="card-des">掠夺者来里！</p>
+                    <div class="card-btn" onclick="window.open('lookvideo.html#1')">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 384 512" stroke-width="0" fill="currentColor" stroke="currentColor">
+                            <path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"></path>
+                        </svg>
+                        <span class="card-btn-text">立即观看</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-image-container">
+                        <img src="photo/b.png">
+                    </div>
+                    <p class="card-title">搞笑视频1</p>
+                    <p class="card-des">哈哈哈哈哈哈哈哈哈哈哈哈</p>
+                    <div class="card-btn" onclick="window.open('lookvideo.html#2')">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 384 512" stroke-width="0" fill="currentColor" stroke="currentColor">
+                            <path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"></path>
+                        </svg>
+                        <span class="card-btn-text">立即观看</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-image-container">
+                        <img src="photo/c.png">
+                    </div>
+                    <p class="card-title">搞笑视频2</p>
+                    <p class="card-des">哈哈哈哈哈哈哈</p>
+                    <div class="card-btn" onclick="window.open('lookvideo.html#3')">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 384 512" stroke-width="0" fill="currentColor" stroke="currentColor">
+                            <path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"></path>
+                        </svg>
+                        <span class="card-btn-text">立即观看</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-image-container">
+                        <img src="photo/d.png">
+                    </div>
+                    <p class="card-title">好，想骂你。</p>
+                    <p class="card-des">吸D的是shabby</p>
+                    <div class="card-btn" onclick="window.open('lookvideo.html#4')">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 384 512" stroke-width="0" fill="currentColor" stroke="currentColor">
+                            <path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"></path>
+                        </svg>
+                        <span class="card-btn-text">立即观看</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-image-container">
+                        <img src="photo/e.png">
+                    </div>
+                    <p class="card-title">我好悲伤</p>
+                    <p class="card-des">QAQ</p>
+                    <div class="card-btn" onclick="window.open('lookvideo.html#5')">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 384 512" stroke-width="0" fill="currentColor" stroke="currentColor">
+                            <path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"></path>
+                        </svg>
+                        <span class="card-btn-text">立即观看</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-image-container">
+                        <img src="photo/f.png">
+                    </div>
+                    <p class="card-title">我扇你脸了</p>
+                    <p class="card-des">PIA</p>
+                    <div class="card-btn" onclick="window.open('lookvideo.html#6')">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 384 512" stroke-width="0" fill="currentColor" stroke="currentColor">
+                            <path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"></path>
+                        </svg>
+                        <span class="card-btn-text">立即观看</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-image-container">
+                        <img src="photo/g.png">
+                    </div>
+                    <p class="card-title">小胖跳舞</p>
+                    <p class="card-des">好看！</p>
+                    <div class="card-btn" onclick="window.open('lookvideo.html#7')">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 384 512" stroke-width="0" fill="currentColor" stroke="currentColor">
+                            <path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"></path>
+                        </svg>
+                        <span class="card-btn-text">立即观看</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-image-container">
+                        <img src="photo/ads1.png">
+                    </div>
+                    <p class="card-title">[ADS]气谁音乐</p>
+                    <p class="card-des"><a style="color: skyblue;" onclick="alert('气谁音乐，祝你发现宝藏歌曲！支持收藏功能，操作简单方便，全程无广，给你更流畅的丝滑体验，并且拥有多种曲风和排行。')">查看详情</a>  <a style="color: skyblue;" onclick="alert('因为作者想推销一下自己的产品。')">为什么我会看到广告？</a></p>
+                    <div class="card-btn" onclick="window.open('https://shequ.codemao.cn/work/180148018')">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 384 512" stroke-width="0" fill="currentColor" stroke="currentColor">
+                            <path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"></path>
+                        </svg>
+                        <span class="card-btn-text">立即使用！</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-image-container">
+                        <img src="photo/h.png">
+                    </div>
+                    <p class="card-title">一非洲帅哥在BBC干了件事</p>
+                    <p class="card-des">嘿嘿嘿</p>
+                    <div class="card-btn" onclick="window.open('lookvideo.html#8')">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 384 512" stroke-width="0" fill="currentColor" stroke="currentColor">
+                            <path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"></path>
+                        </svg>
+                        <span class="card-btn-text">立即观看</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-image-container">
+                        <img src="photo/i.png">
+                    </div>
+                    <p class="card-title">一火柴人斗舞火爆全网</p>
+                    <p class="card-des">电摇</p>
+                    <div class="card-btn" onclick="window.open('lookvideo.html#9')">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 384 512" stroke-width="0" fill="currentColor" stroke="currentColor">
+                            <path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"></path>
+                        </svg>
+                        <span class="card-btn-text">立即观看</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-image-container">
+                        <img src="photo/j.png">
+                    </div>
+                    <p class="card-title">音乐</p>
+                    <p class="card-des">豪庭🤓🤓🤓</p>
+                    <div class="card-btn" onclick="window.open('lookvideo.html#10')">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 384 512" stroke-width="0" fill="currentColor" stroke="currentColor">
+                            <path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"></path>
+                        </svg>
+                        <span class="card-btn-text">立即观看</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-image-container">
+                        <img src="photo/k.png">
+                    </div>
+                    <p class="card-title">Emotional Damge</p>
+                    <p class="card-des">离谱</p>
+                    <div class="card-btn" onclick="window.open('lookvideo.html#11')">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 384 512" stroke-width="0" fill="currentColor" stroke="currentColor">
+                            <path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"></path>
+                        </svg>
+                        <span class="card-btn-text">立即观看</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-image-container">
+                        <img src="photo/l.png">
+                    </div>
+                    <p class="card-title">nice！</p>
+                    <p class="card-des">nice！</p>
+                    <div class="card-btn" onclick="window.open('lookvideo.html#12')">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 384 512" stroke-width="0" fill="currentColor" stroke="currentColor">
+                            <path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"></path>
+                        </svg>
+                        <span class="card-btn-text">立即观看</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-image-container">
+                        <img src="photo/m.png">
+                    </div>
+                    <p class="card-title">哪里贵了？</p>
+                    <p class="card-des">好好想想自己的原因</p>
+                    <div class="card-btn" onclick="window.open('lookvideo.html#13')">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 384 512" stroke-width="0" fill="currentColor" stroke="currentColor">
+                            <path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"></path>
+                        </svg>
+                        <span class="card-btn-text">立即观看</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-image-container">
+                        <img src="photo/n.png">
+                    </div>
+                    <p class="card-title">学校停电了</p>
+                    <p class="card-des">别问了在检修</p>
+                    <div class="card-btn" onclick="window.open('lookvideo.html#14')">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 384 512" stroke-width="0" fill="currentColor" stroke="currentColor">
+                            <path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"></path>
+                        </svg>
+                        <span class="card-btn-text">立即观看</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-image-container">
+                        <img src="./photo/o.png">
+                    </div>
+                    <p class="card-title">iWurenji 16 Pro Max</p>
+                    <p class="card-des">无人机</p>
+                    <div class="card-btn" onclick="window.open('lookvideo.html#15')">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 384 512" stroke-width="0" fill="currentColor" stroke="currentColor">
+                            <path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"></path>
+                        </svg>
+                        <span class="card-btn-text">立即观看</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-image-container">
+                        <img src="photo/p.jpg">
+                    </div>
+                    <p class="card-title">这条视频将看哭中国14亿人</p>
+                    <p class="card-des">我已经哭了，你呢？</p>
+                    <div class="card-btn" onclick="window.open('lookvideo.html#16')">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 384 512" stroke-width="0" fill="currentColor" stroke="currentColor">
+                            <path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"></path>
+                        </svg>
+                        <span class="card-btn-text">立即观看</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-image-container">
+                        <img src="photo/q.png">
+                    </div>
+                    <p class="card-title">世界上最好听的歌曲！</p>
+                    <p class="card-des">豪庭🤓🤓🤓</p>
+                    <div class="card-btn" onclick="window.open('lookvideo.html#17')">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 384 512" stroke-width="0" fill="currentColor" stroke="currentColor">
+                            <path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"></path>
+                        </svg>
+                        <span class="card-btn-text">立即观看</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-image-container">
+                        <img src="photo/r.png">
+                    </div>
+                    <p class="card-title">我是梁志超他奶奶</p>
+                    <p class="card-des">你们怎么教育梁志超的</p>
+                    <div class="card-btn" onclick="window.open('lookvideo.html#18')">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 384 512" stroke-width="0" fill="currentColor" stroke="currentColor">
+                            <path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"></path>
+                        </svg>
+                        <span class="card-btn-text">立即观看</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-image-container">
+                        <img src="photo/s.png">
+                    </div>
+                    <p class="card-title">还是PVP大佬</p>
+                    <p class="card-des">压力板的祸。</p>
+                    <div class="card-btn" onclick="window.open('lookvideo.html#19')">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 384 512" stroke-width="0" fill="currentColor" stroke="currentColor">
+                            <path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"></path>
+                        </svg>
+                        <span class="card-btn-text">立即观看</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-image-container">
+                        <img src="photo/t.png">
+                    </div>
+                    <p class="card-title">噪音代言人</p>
+                    <p class="card-des">耳朵已经没了。</p>
+                    <div class="card-btn" onclick="window.open('lookvideo.html#20')">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 384 512" stroke-width="0" fill="currentColor" stroke="currentColor">
+                            <path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"></path>
+                        </svg>
+                        <span class="card-btn-text">立即观看</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-image-container">
+                        <img src="photo/u.png">
+                    </div>
+                    <p class="card-title">菜！就多练！</p>
+                    <p class="card-des">菜！就多练！</p>
+                    <div class="card-btn" onclick="window.open('lookvideo.html#21')">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 384 512" stroke-width="0" fill="currentColor" stroke="currentColor">
+                            <path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"></path>
+                        </svg>
+                        <span class="card-btn-text">立即观看</span>
+                    </div>
+                </div>
+            </div>
+            <p style="text-align: center;font-size: 25px;color: gray;">我也是有底线哒~</p>
+        </div>
+    </div>
+    <script src="ui/newui.js"></script>
+</body>
+</html>

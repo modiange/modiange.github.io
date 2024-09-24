@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>好看视频大赏</title>
+    <style>
+        body {
+            background-color: #f2f2f2;
+            font-family:"得意黑";
+            animation: fadeIn 1s ease-in-out;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        
+        @keyframes scaleIn {
+            from {
+                transform: scale(0.9);
+            }
+            to {
+                transform: scale(1);
+            }
+        }
+        
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            margin: 20px;
+        }
+        
+        .video {
+            margin: 20px;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            border-radius: 5px;
+            width: 300px;
+            height: 300px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            transition: transform 0.3s ease-in-out;
+            animation: scaleIn 0.3s ease-in-out;
+        }
+        
+        .video:hover {
+            transform: scale(1.1);
+        }
+        
+        .video img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 5px;
+            transition: transform 0.3s ease-in-out;
+        }
+        
+        .video img:hover {
+            transform: scale(1.1);
+        }
+        
+        .video h2 {
+            font-size: 18px;
+            color: #333;
+            margin: 10px 0;
+        }
+        
+        .video p {
+            font-size: 14px;
+            color: #666;
+            margin: 0;
+        }
+        
+        .video .stats {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            margin-top: 10px;
+        }
+        
+        .video .stats span {
+            font-size: 12px;
+            color: #999;
+        }
+        
+        .video .stats i {
+            font-size: 16px;
+            color: #999;
+            margin-right: 5px;
+        }
+        
+        .video .actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            margin-top: 10px;
+        }
+        
+        .video .actions button {
+            background-color: #f44336;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 5px 10px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: transform 0.3s ease-in-out;
+        }
+        
+        .video .actions button:hover {
+            transform: scale(1.1);
+        }
+    </style>
+</head>
+
+<body>
+    <h1>好看视频大赏</h1>   
+    <div class="container">
+        <div class="video">
+            <img src="./photo/a.png" alt="Video thumbnail">
+            <h2>----------掠夺----------</h2>
+            <p>掠夺者来里！</p>
+            <div class="stats">
+                <span><i class="fas fa-eye"></i>1.9w</span>
+                <span><i class="fas fa-thumbs-up"></i>1233</span>
+                <span><i class="fas fa-thumbs-down"></i>3</span>
+            </div>
+            <div class="actions">
+                <button onclick="window.location.href='lookvideo.html#1'">播放</button>
+                <button onclick="shoucang()">收藏</button>
+            </div>
+        </div>
+        <div class="video">
+            <img src="./photo/b.png" alt="Video thumbnail">
+            <h2>搞笑视频1</h2>
+            <p>哈哈哈哈哈哈哈哈哈哈哈哈</p>
+            <div class="stats">
+                <span><i class="fas fa-eye"></i>234.2w</span>
+                <span><i class="fas fa-thumbs-up"></i>12.7w</span>
+                <span><i class="fas fa-thumbs-down"></i>237</span>
+            </div>
+            <div class="actions">
+                <button onclick="window.location.href='lookvideo.html#2'">播放</button>
+                <button onclick="shoucang()">收藏</button>
+            </div>
+        </div>
+        <div class="video">
+            <img src="./photo/c.png" alt="Video thumbnail">
+            <h2>搞笑视频2</h2>
+            <p>哈哈哈哈哈哈哈</p>
+            <div class="stats">
+                <span><i class="fas fa-eye"></i>2343.6w</span>
+                <span><i class="fas fa-thumbs-up"></i>931.4w</span>
+                <span><i class="fas fa-thumbs-down"></i>9381</span>
+            </div>
+            <div class="actions">
+                <button onclick="window.location.href='lookvideo.html#3'">播放</button>
+                <button onclick="shoucang()">收藏</button>
+            </div>
+        </div>
+        <div class="video">
+            <img src="./photo/d.png" alt="Video thumbnail">
+            <h2>好，想骂你。</h2>
+            <p>shabby</p>
+            <div class="stats">
+                <span><i class="fas fa-eye"></i>2322w</span>
+                <span><i class="fas fa-thumbs-up"></i>111.6w</span>
+                <span><i class="fas fa-thumbs-down"></i>3</span>
+            </div>
+            <div class="actions">
+                <button onclick="window.location.href='lookvideo.html#4'">播放</button>
+                <button onclick="shoucang()">收藏</button>
+            </div>
+        </div>
+        <div class="video">
+            <img src="./photo/e.png" alt="Video thumbnail">
+            <h2>我好悲伤</h2>
+            <p>QAQ</p>
+            <div class="stats">
+                <span><i class="fas fa-eye"></i>2332w</span>
+                <span><i class="fas fa-thumbs-up"></i>322.876w</span>
+                <span><i class="fas fa-thumbs-down"></i>212</span>
+            </div>
+            <div class="actions">
+                <button onclick="window.location.href='lookvideo.html#5'">播放</button>
+                <button onclick="shoucang()">收藏</button>
+            </div>
+        </div>
+        <div class="video">
+            <img src="./photo/f.png" alt="Video thumbnail">
+            <h2>我扇你脸了</h2>
+            <p>PIA</p>
+            <div class="stats">
+                <span><i class="fas fa-eye"></i>1222w</span>
+                <span><i class="fas fa-thumbs-up"></i>232.2w</span>
+                <span><i class="fas fa-thumbs-down"></i>100</span>
+            </div>
+            <div class="actions">
+                <button onclick="window.location.href='lookvideo.html#6'">播放</button>
+                <button onclick="shoucang()">收藏</button>
+            </div>
+        </div>
+        <div class="video">
+            <img src="./photo/g.png" alt="Video thumbnail">
+            <h2>小胖跳舞</h2>
+            <p>好看！</p>
+            <div class="stats">
+                <span><i class="fas fa-eye"></i>1000</span>
+                <span><i class="fas fa-thumbs-up"></i>200</span>
+                <span><i class="fas fa-thumbs-down"></i>50</span>
+            </div>
+            <div class="actions">
+                <button onclick="window.location.href='lookvideo.html#7'">播放</button>
+                <button onclick="shoucang()">收藏</button>
+            </div>
+        </div>
+        <div class="video">
+            <img src="./photo/h.png" alt="Video thumbnail">
+            <h2>一非洲帅哥在BBC干了件事</h2>
+            <p>嘿嘿嘿</p>
+            <div class="stats">
+                <span><i class="fas fa-eye"></i>1000w</span>
+                <span><i class="fas fa-thumbs-up"></i>200w</span>
+                <span><i class="fas fa-thumbs-down"></i>50</span>
+            </div>
+            <div class="actions">
+                <button onclick="window.location.href='lookvideo.html#8'">播放</button>
+                <button onclick="shoucang()">收藏</button>
+            </div>
+        </div>
+        <div class="video">
+            <img src="./photo/i.png" alt="Video thumbnail">
+            <h2>一火柴人斗舞火爆全网</h2>
+            <p>电摇</p>
+            <div class="stats">
+                <span><i class="fas fa-eye"></i>283.23w</span>
+                <span><i class="fas fa-thumbs-up"></i>23w</span>
+                <span><i class="fas fa-thumbs-down"></i>1w</span>
+            </div>
+            <div class="actions">
+                <button onclick="window.location.href='lookvideo.html#9'">播放</button>
+                <button onclick="shoucang()">收藏</button>
+            </div>
+        </div>
+        <div class="video">
+            <img src="./photo/j.png" alt="Video thumbnail">
+            <h2>音乐</h2>
+            <p>好听</p>
+            <div class="stats">
+                <span><i class="fas fa-eye"></i>1000w</span>
+                <span><i class="fas fa-thumbs-up"></i>200w</span>
+                <span><i class="fas fa-thumbs-down"></i>0</span>
+            </div>
+            <div class="actions">
+                <button onclick="window.location.href='lookvideo.html#10'">播放</button>
+                <button onclick="shoucang()">收藏</button>
+            </div>
+        </div>
+        <div class="video">
+            <img src="./photo/k.png" alt="Video thumbnail">
+            <h2>Emotional Damge</h2>
+            <p>离谱</p>
+            <div class="stats">
+                <span><i class="fas fa-eye"></i>9007w</span>
+                <span><i class="fas fa-thumbs-up"></i>2000w</span>
+                <span><i class="fas fa-thumbs-down"></i>5</span>
+            </div>
+            <div class="actions">
+                <button onclick="window.location.href='lookvideo.html#11'">播放</button>
+                <button onclick="shoucang()">收藏</button>
+            </div>
+        </div>
+        <div class="video">
+            <img src="./photo/l.png" alt="Video thumbnail">
+            <h2>nice!</h2>
+            <p>nice!</p>
+            <div class="stats">
+                <span><i class="fas fa-eye"></i>9999w+</span>
+                <span><i class="fas fa-thumbs-up"></i>8000w</span>
+                <span><i class="fas fa-thumbs-down"></i>2</span>
+            </div>
+            <div class="actions">
+                <button onclick="window.location.href='lookvideo.html#12'">播放</button>
+                <button onclick="shoucang()">收藏</button>
+            </div>
+        </div>
+        <div class="video">
+            <img src="./photo/m.jpg" alt="Video thumbnail">
+            <h2>2015动画春晚</h2>
+            <p>xswl</p>
+            <div class="stats">
+                <span><i class="fas fa-eye"></i>9999w+</span>
+                <span><i class="fas fa-thumbs-up"></i>8000w</span>
+                <span><i class="fas fa-thumbs-down"></i>2</span>
+            </div>
+            <div class="actions">
+                <button onclick="window.location.href='lookvideo.html#13'">播放</button>
+                <button onclick="shoucang()">收藏</button>
+            </div>
+        </div>
+        <div class="video">
+            <img src="./photo/n.jpg" alt="Video thumbnail">
+            <h2>学校停电了</h2>
+            <p>别问了在检修</p>
+            <div class="stats">
+                <span><i class="fas fa-eye"></i>99.1w</span>
+                <span><i class="fas fa-thumbs-up"></i>42.8w</span>
+                <span><i class="fas fa-thumbs-down"></i>34</span>
+            </div>
+            <div class="actions">
+                <button onclick="window.location.href='lookvideo.html#14'">播放</button>
+                <button onclick="shoucang()">收藏</button>
+            </div>
+        </div>
+        <div class="video">
+            <img src="./photo/o.jpg" alt="Video thumbnail">
+            <h2>iWurenji 14 Pro Max</h2>
+            <p>无人机</p>
+            <div class="stats">
+                <span><i class="fas fa-eye"></i>99.1w</span>
+                <span><i class="fas fa-thumbs-up"></i>42.8w</span>
+                <span><i class="fas fa-thumbs-down"></i>34</span>
+            </div>
+            <div class="actions">
+                <button onclick="window.location.href='lookvideo.html#15'">播放</button>
+                <button onclick="shoucang()">收藏</button>
+            </div>
+        </div>
+        <div class="video">
+            <img src="./photo/p.jpg" alt="Video thumbnail">
+            <h2>这条视频将看哭中国14亿人</h2>
+            <p>我已经哭了，你呢？</p>
+            <div class="stats">
+                <span><i class="fas fa-eye"></i>99.1w</span>
+                <span><i class="fas fa-thumbs-up"></i>42.8w</span>
+                <span><i class="fas fa-thumbs-down"></i>34</span>
+            </div>
+            <div class="actions">
+                <button onclick="window.location.href='lookvideo.html#16'">播放</button>
+                <button onclick="shoucang()">收藏</button>
+            </div>
+        </div>
+    </div>
+    </div>
+</div>
+    <script>
+        function shoucang(){
+            alert('收藏失败！')
+        };
+    </script>
+</body>
+
+</html>

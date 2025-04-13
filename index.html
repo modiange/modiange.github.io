@@ -1,1 +1,432 @@
-hello:)
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>游戏大全网站</title>
+  <style>
+    :root {
+      /* Light Mode Colors */
+      --bg-light: #fffaf0; /* 浅米黄色 */
+      --text-light: #333;
+      --primary-light: #a8d8ff; /* 浅天蓝 */
+      --secondary-light: #ffb6c1; /* 浅粉色 */
+
+      /* Dark Mode Colors */
+      --bg-dark: #121212; /* 深黑色 */
+      --text-dark: #e0e0e0; /* 浅灰色 */
+      --neon-purple: #c77dff; /* 霓虹紫 */
+      --neon-blue: #6ec7ff; /* 霓虹蓝 */
+      --neon-pink: #ff79c6; /* 霓虹粉 */
+      --neon-green: #50fa7b; /* 霓虹绿 */
+
+      /* Common Styles */
+      --card-radius: 12px;
+      --card-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      --transition-speed: 0.3s;
+      --max-card-width: 360px;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: var(--bg-light);
+      color: var(--text-light);
+      transition: color var(--transition-speed), background-color var(--transition-speed);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      body {
+        background: #333; /* 固定深色背景 */
+        color: var(--text-dark);
+      }
+      h1 {
+        color: var(--neon-purple);
+        text-shadow: 0 0 5px var(--neon-purple), 0 0 10px var(--neon-blue);
+      }
+      .search-bar input {
+        border: 2px solid transparent;
+        background: linear-gradient(135deg, var(--neon-pink), var(--neon-blue));
+        background-clip: padding-box;
+        box-shadow: 0 0 5px var(--neon-pink), 0 0 10px var(--neon-blue);
+      }
+      .game-item {
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+      }
+      .game-content {
+        background: linear-gradient(135deg, rgba(44, 44, 44, 0.8), rgba(20, 20, 20, 0.8));
+        color: var(--text-dark);
+      }
+    }
+
+    /* Header */
+    header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    h1 {
+      font-size: 2.5rem;
+      font-weight: bold;
+      margin: 0;
+      line-height: 1.2;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      background: linear-gradient(135deg, #ffebcd, #ffe4b5);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Categories */
+    .categories {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 20px;
+    }
+    .categories button {
+      padding: 8px 16px;
+      border: none;
+      border-radius: var(--card-radius);
+      font-size: 0.9rem;
+      font-weight: 500;
+      cursor: pointer;
+      opacity: 0.9;
+      transition: all var(--transition-speed);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      box-shadow: var(--card-shadow);
+    }
+    .categories button[data-tag="racing"] {
+      background: linear-gradient(135deg, #ff79c6, #bd93f9);
+      box-shadow: 0 0 5px #ff79c6, 0 0 10px #bd93f9;
+    }
+    .categories button[data-tag="casual"] {
+      background: linear-gradient(135deg, #50fa7b, #8be9fd);
+      box-shadow: 0 0 5px #50fa7b, 0 0 10px #8be9fd;
+    }
+    .categories button[data-tag="multiplayer"] {
+      background: linear-gradient(135deg, #ffb86c, #ff5555);
+      box-shadow: 0 0 5px #ffb86c, 0 0 10px #ff5555;
+    }
+    .categories button.selected {
+      opacity: 1;
+      transform: scale(1.05);
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Search Bar */
+    .search-bar {
+      margin-top: 20px;
+      display: flex;
+      justify-content: center;
+    }
+    .search-bar input {
+      padding: 10px 16px;
+      font-size: 1rem;
+      border: 2px solid var(--border-light);
+      border-radius: var(--card-radius);
+      width: 80%;
+      max-width: 400px;
+      outline: none;
+      transition: border-color var(--transition-speed), box-shadow var(--transition-speed);
+      background: var(--bg-light);
+    }
+    .search-bar input:focus {
+      border-color: var(--primary-light);
+      box-shadow: 0 0 5px var(--primary-light);
+    }
+
+    /* Game List */
+    .game-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 15px; /* 减小卡片间距 */
+      margin-top: 30px;
+    }
+    .game-item {
+      position: relative;
+      border-radius: var(--card-radius);
+      overflow: hidden;
+      height: 220px;
+      max-width: var(--max-card-width);
+      margin: 0 auto;
+      background-size: cover;
+      background-position: center;
+      cursor: pointer;
+      transition: transform var(--transition-speed), box-shadow var(--transition-speed);
+      box-shadow: var(--card-shadow);
+    }
+    .game-item:hover,
+    .game-item.active {
+      transform: scale(1.03);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    }
+    .game-content {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      padding: 12px;
+      background: rgba(255, 255, 255, 0.85);
+      color: #000;
+      backdrop-filter: blur(5px);
+      border-top-left-radius: var(--card-radius);
+      border-top-right-radius: var(--card-radius);
+    }
+    .game-title {
+      margin: 0;
+      font-size: 1.1rem;
+      font-weight: bold;
+      line-height: 1.2;
+    }
+    .game-description {
+      margin: 5px 0 0;
+      font-size: 0.9rem;
+      line-height: 1.4;
+    }
+
+    /* Empty Message */
+    .empty-msg {
+      margin-top: 20px;
+      font-style: italic;
+      text-align: center;
+      font-size: 1.2rem;
+      opacity: 0.8;
+    }
+    .hidden { display: none !important; }
+
+    /* Background Overlay */
+    .bg-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: -1;
+      overflow: hidden;
+    }
+    .bg-layer {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background-size: cover;
+      background-position: center;
+      opacity: 0;
+      transition: opacity 0.6s ease;
+      pointer-events: none;
+      filter: blur(8px);
+    }
+    .bg-layer.visible {
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-overlay">
+    <div class="bg-layer" id="bg1"></div>
+    <div class="bg-layer" id="bg2"></div>
+  </div>
+
+  <header>
+    <h1 id="site-title">游戏大全</h1>
+    <nav class="categories" id="category-nav"></nav>
+    <div class="search-bar">
+      <input type="text" id="search-input" placeholder="搜索游戏..." />
+    </div>
+  </header>
+  <div class="game-list" id="game-list"></div>
+  <div class="empty-msg hidden" id="empty-msg"></div>
+
+  <script>
+    const lang = navigator.language.startsWith("zh") 
+      ? (navigator.language.includes('Hant') ? "zh-Hant" : "zh") 
+      : "en";
+
+    const i18n = {
+      zh: {
+        siteTitle: "Diange的游戏厅",
+        empty: "暂无内容……",
+        defaultTitle: "暂无标题",
+        defaultDesc: "暂无简介",
+        searchPlaceholder: "搜索游戏..."
+      },
+      "zh-Hant": {
+        siteTitle: "Diange的遊戲廳",
+        empty: "暫無內容……",
+        defaultTitle: "暫無標題",
+        defaultDesc: "暫無簡介",
+        searchPlaceholder: "搜尋遊戲..."
+      },
+      en: {
+        siteTitle: "Diange's Game Hub",
+        empty: "No content available...",
+        defaultTitle: "No Title",
+        defaultDesc: "No Description",
+        searchPlaceholder: "Search games..."
+      }
+    };
+
+    const categories = [
+      { tag: "racing", label: { zh: "中文", "zh-Hant": "中文", en: "Chinese" }, emoji: "🀄️" },
+      { tag: "casual", label: { zh: "射击", "zh-Hant": "射擊", en: "Shooting" }, emoji: "🔫" },
+      { tag: "multiplayer", label: { zh: "多人", "zh-Hant": "多人遊玩", en: "Multiplayer" }, emoji: "👥" }
+    ];
+
+    const games = [
+      {
+        url: "https://www.crazygames.com/",
+        img: "https://64.media.tumblr.com/262c3c51b9393824efda4bd274079959/4338942ffe05b862-e1/s1280x1920/88a3b156187af4f4f39249c9eae495f03fd70b05.jpg",
+        title: { zh: "CrazyGames", "zh-Hant": "CrazyGames", en: "CrazyGames" },
+        desc: { zh: "许多小游戏", "zh-Hant": "許多小遊戲", en: "A variety of mini-games" },
+        tags: []
+      },
+      {
+        url: "https://bloxd.io/",
+        img: "https://64.media.tumblr.com/f92eeaddce75a21d9b73eb7202d269cb/4ea7aaca5d88ea85-bb/s1280x1920/7742c490ff0b51fc28d56f478a3d07dbc063b826.jpg",
+        title: { zh: "blxod.io", "zh-Hant": "blxod.io", en: "blxod.io" },
+        desc: { zh: "允许多人联机的沙盒游戏", "zh-Hant": "允許多人聯機的沙盒遊戲", en: "A sandbox game that supports multiplayer online connectivity" },
+        tags: ["racing","multiplayer"]
+      },
+      {
+        url: "https://poxel.io/",
+        img: "https://via.placeholder.com/300x180?text=C",
+        title: { zh: "poxel.io", "zh-Hant": "poxel.io", en: "poxel.io" },
+        desc: { zh: "准备好一场刺激的枪战之旅！", "zh-Hant": "準備好一場刺激的槍戰之旅！", en: "Get ready for an exhilarating gunfight adventure!" },
+        tags: ["casual"]
+      },
+      {
+        url: "https://poki.com/",
+        img: "https://via.placeholder.com/300x180?text=D",
+        title: { zh: "poki", "zh-Hant": "poki", en: "poki" },
+        desc: { zh: "放轻松！", "zh-Hant": "放輕鬆！", en: "Take it easy!" },
+        tags: ["racing"]
+      },
+      {
+        url: "https://www.cookinggames.com/",
+        img: "https://via.placeholder.com/300x180?text=C",
+        title: { zh: "CookingGames", "zh-Hant": "CookingGames", en: "CookingGames" },
+        desc: { zh: "成为一个厨师！尽情的发挥自己的厨艺！", "zh-Hant": "成為一名廚師！盡情地發揮自己的廚藝！", en: "Become a chef! Let your culinary skills shine!" },
+        tags: []
+      },
+      {
+        url: "https://narrow.one/",
+        img: "https://via.placeholder.com/300x180?text=D",
+        title: { zh: "narrow.one", "zh-Hant": "narrow.one", en: "narrow.one" },
+        desc: { zh: "许多武器任你选择！", "zh-Hant": "這裡有許多武器，選擇一把，開始和你的好朋友對戰！", en: "There are plenty of weapons here—pick one and start battling it out with your mates!" },
+        tags: ["multiplayer","casual"]
+      },
+      {
+        url: "https://slowroads.io/",
+        img: "https://via.placeholder.com/300x180?text=C",
+        title: { zh: "slowroads.io", "zh-Hant": "slowroads.io", en: "slowroads.io" },
+        desc: { zh: "轻松的在公路上遛弯", "zh-Hant": "輕鬆地在公路上駕駛", en: "GCruise along the road with ease." },
+        tags: []
+      }
+    ];
+
+    document.getElementById("site-title").textContent = i18n[lang].siteTitle;
+    const nav = document.getElementById("category-nav");
+    const selected = new Set();
+    const searchInput = document.getElementById("search-input");
+
+    // 设置搜索框的占位符
+    searchInput.placeholder = i18n[lang].searchPlaceholder;
+
+    categories.forEach(cat => {
+      const btn = document.createElement("button");
+      btn.dataset.tag = cat.tag;
+      btn.textContent = `${cat.emoji} ${cat.label[lang]}`;
+      btn.onclick = () => {
+        if (selected.has(cat.tag)) {
+          selected.delete(cat.tag);
+          btn.classList.remove("selected");
+        } else {
+          selected.add(cat.tag);
+          btn.classList.add("selected");
+        }
+        renderGames();
+      };
+      nav.appendChild(btn);
+    });
+
+    const gameList = document.getElementById("game-list");
+    const emptyMsg = document.getElementById("empty-msg");
+
+    let bg1 = document.getElementById("bg1");
+    let bg2 = document.getElementById("bg2");
+    let isBg1Visible = true;
+
+    function changeBackground(imgUrl) {
+      const next = isBg1Visible ? bg2 : bg1;
+      const current = isBg1Visible ? bg1 : bg2;
+
+      // 设置下一个背景图片
+      next.style.backgroundImage = `url('${imgUrl}')`;
+
+      // 触发 CSS 动画
+      requestAnimationFrame(() => {
+        next.classList.add("visible");
+        current.classList.remove("visible");
+        isBg1Visible = !isBg1Visible;
+      });
+    }
+
+    function resetBackground() {
+      const current = isBg1Visible ? bg1 : bg2;
+      current.classList.remove("visible");
+    }
+
+    function renderGames() {
+      const searchText = searchInput.value.toLowerCase().trim();
+      gameList.innerHTML = "";
+      let count = 0;
+      games.forEach(game => {
+        const matchTags = [...selected].every(tag => game.tags.includes(tag));
+        const matchSearch = game.title?.[lang]?.toLowerCase().includes(searchText) || 
+                            game.desc?.[lang]?.toLowerCase().includes(searchText);
+
+        if ((selected.size === 0 || matchTags) && (searchText === "" || matchSearch)) {
+          const link = document.createElement("a");
+          link.href = game.url || "#";
+          link.target = "_blank";
+          link.className = "game-link";
+
+          const item = document.createElement("div");
+          item.className = "game-item";
+          item.style.backgroundImage = `url('${game.img}')`;
+
+          item.addEventListener("mouseenter", () => changeBackground(game.img));
+          item.addEventListener("mouseleave", resetBackground);
+
+          const content = document.createElement("div");
+          content.className = "game-content";
+
+          const title = document.createElement("div");
+          title.className = "game-title";
+          title.textContent = game.title?.[lang] || i18n[lang].defaultTitle;
+
+          const desc = document.createElement("div");
+          desc.className = "game-description";
+          desc.textContent = game.desc?.[lang] || i18n[lang].defaultDesc;
+
+          content.append(title, desc);
+          item.append(content);
+          link.append(item);
+          gameList.append(link);
+          count++;
+        }
+      });
+      emptyMsg.classList.toggle("hidden", count > 0);
+      if (count === 0) emptyMsg.textContent = i18n[lang].empty;
+    }
+
+    // 监听搜索框输入事件
+    searchInput.addEventListener("input", renderGames);
+
+    renderGames();
+  </script>
+</body>
+</html>

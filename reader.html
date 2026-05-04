@@ -1,348 +1,200 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-    <meta charset="UTF-8">
-    <title>登录系统</title>
-    <link rel="stylesheet" href="style.css">
-    <script src="https://unpkg.com/@phosphor-icons/web"></script>
-</head>
-<body>
-    <div class="top-bar">
-        <div style="flex:1"></div>
-        <button class="theme-toggle" onclick="toggleTheme()"><i id="theme-icon" class="ph ph-moon"></i></button>
-    </div>
+// 全局状态：监听系统主题变化
+const prefersDarkMedia = window.matchMedia('(prefers-color-scheme: dark)');
+
+function updateTheme(isDark) {
+    document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
+    const icon = document.getElementById('theme-icon');
+    if (icon) {
+        icon.className = isDark ? 'ph ph-sun' : 'ph ph-moon';
+    }
+}
+
+// 手动切换主题按钮
+function toggleTheme() {
+    const isCurrentlyDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    updateTheme(!isCurrentlyDark);
+}
+
+// 自动执行：默认深色，若系统有明确主题则跟随
+(function setupGlobalTheme() {
+    // 默认启用深色模式，除非系统明确为 light
+    let initDark = true;
+    if (prefersDarkMedia.matches === false) initDark = false; 
+    updateTheme(initDark);
     
-    <div class="app-container">
-        <div class="content-area" style="padding: var(--spacing-lg);">
-            <!-- 欢迎与标题置于顶部且加大 -->
-            <div style="text-align: center; margin-top: 10px; margin-bottom: 40px;">
-                <h1 class="serif-title" style="font-size: 2.8rem; margin-bottom: 8px;">Liangshinji.</h1>
-                <p style="color: var(--text-muted); font-size: 1.1rem; letter-spacing: 2px;">欢迎回来</p>
-            </div>
-            
-            <!-- 动态登录表单区 -->
-            <div id="form-container" style="min-height: 220px;">
-                <div class="custom-select-wrapper" id="account-select">
-                        <div class="select-trigger" onclick="toggleSelect('account-select')">
-                            <div class="trigger-content">
-                                <i class="ph ph-user-circle"></i>
-                                <span id="account-selected-text">请选择账户...</span>
-                            </div>
-                            <i class="ph ph-caret-down"></i>
-                        </div>
-                        <div class="select-options">
-                            <div class="custom-option" onclick="selectOption('account-select', 'student', 'ph-crown')">
-                                <i class="ph ph-crown"></i> student
-                            </div>
-                            <div class="custom-option" onclick="selectOption('account-select', 'guest_user', 'ph-user')">
-                                <i class="ph ph-user"></i> guest_user
-                            </div>
-                        </div>
-                </div>
-                <!-- 方式 1：密码登录 -->
-                <div id="login-password" class="login-panel" style="display: block;">
-                    <input id="login-password-input" type="password" class="input-field" placeholder="请输入密码">
-                    <button class="btn btn-primary" style="width: 100%; margin-top: 8px;" onclick="loginWithPassword()">验证密码并登录</button>
-                    <p style="text-align: center; color: var(--text-muted); margin: 16px;font-size: 1.1em;">亦或者</p>
-                    <button class="btn btn-primary" style="width: 100%;" onclick="loginWithPasskey()">使用通行密钥</button>
-                </div>
+    // 实时跟随操作系统切换
+    prefersDarkMedia.addEventListener('change', (e) => updateTheme(e.matches));
+})();
 
-                <!-- 方式 2：NFC 卡登录 -->
-                <div id="login-card" class="login-panel" style="display: none;">
-                    <div class="nfc-animation-box">
-                        <i class="ph-duotone ph-identification-card nfc-card"></i>
-                        <i class="ph-bold ph-wifi-high nfc-waves"></i>
-                    </div>
-                    <p id="nfc-instruction" style="text-align: center; color: var(--text-muted); margin-top: 8px;">请将安全感应卡贴近设备</p>
-                    <div style="display:flex;gap:8px;justify-content:center;margin-top:8px;" id="truecard">
-                        <button id="nfc-toggle-mode" class="btn" style="padding:6px 12px;">切换到键盘输入</button>
-                        <span id="nfc-status" style="align-self:center;color:var(--text-muted);">状态：未启动</span>
-                    </div>
-                </div>
+// 点击整个列表项切换内部 Switch 开关
+window.toggleParentSwitch = function(el) {
+    const checkbox = el.querySelector('input[type="checkbox"]');
+    if (checkbox) {
+        checkbox.checked = !checkbox.checked;
+        checkbox.dispatchEvent(new Event('change'));
+    }
+};
 
-                <!-- 方式 3：验证码登录 -->
-                <div id="login-code" class="login-panel" style="display: none;">
-                    <p style="text-align: center; color: var(--text-muted); margin-bottom: 16px;">请输入 6 位安全验证码</p>
-                    <div class="code-input-container">
-                        <input type="text" maxlength="6" class="code-input" onkeyup="moveNext(this, event)">
-                        <input type="text" maxlength="6" class="code-input" onkeyup="moveNext(this, event)">
-                        <input type="text" maxlength="6" class="code-input" onkeyup="moveNext(this, event)">
-                        <input type="text" maxlength="6" class="code-input" onkeyup="moveNext(this, event)">
-                        <input type="text" maxlength="6" class="code-input" onkeyup="moveNext(this, event)">
-                        <input type="text" maxlength="6" class="code-input" onkeyup="moveNext(this, event)">
-                    </div>
-                    <p style="text-align: center; color: var(--text-muted); margin: 16px;font-size: 1.1em;">亦或者</p>
-                    <button class="btn btn-primary" style="width: 100%;" onclick="loginWithPasskey()">使用通行密钥</button>
-                </div>
-            </div>
+// 默认连接本地 passkey server (端口由 URL hash 指定，缺省 2642)
+let _port = window.location.hash.substring(1) || '2511';
+let web = 'http://localhost:' + _port;
 
-            <!-- 底部的三大登录方式按钮（正方形同行排布） -->
-            <div class="login-methods-row">
-                <button class="method-btn active" onclick="switchLogin('password', this)">
-                    <i class="ph ph-password"></i>
-                    <span>密码</span>
-                </button>
-                <button class="method-btn" onclick="switchLogin('card', this)">
-                    <i class="ph ph-contactless-payment"></i>
-                    <span>刷卡</span>
-                </button>
-                <button class="method-btn" onclick="switchLogin('code', this)">
-                    <i class="ph ph-key"></i>
-                    <span>密钥</span>
-                </button>
-            </div>
-        </div>
-    </div>
+function sendtoserver(datas, ispasskey = false) {
+    if(ispasskey){
+        _port = 2642;
+        web = 'http://localhost:' + _port + '/api';
+    }else{
+        _port = window.location.hash.substring(1) || '2511';
+        web = 'http://localhost:' + _port;
+    }
+    const timestamp = Math.floor(Date.now() / 1000);
 
-    <script src="index.js"></script>
-    <script src="passkey.js"></script>
-    <script src="check.js"></script>
-        <!-- 登录禁用辅助函数由 passkey.js 提供 -->
-    <script>
-        //nfc登录参数
-        let nfcinput = '';
-        let lastnfcinput=-1;
-        function toggleSelect(id) { document.getElementById(id).classList.toggle('open'); }
-        function selectOption(wrapperId, text, iconClass) {
-            const wrapper = document.getElementById(wrapperId);
-            wrapper.querySelector('.trigger-content').innerHTML = `<i class="ph ${iconClass}"></i> <span id="account-selected-text">${text}</span>`;
-            wrapper.classList.remove('open');
-            // 记录被选中的用户名，供登录使用
-            window.selectedAccountName = text;
-            // 修复：只在页面初始时有 id="account-selected-text"，后续 innerHTML 替换会移除 id，导致无法再次获取
-            // 解决方法：用 querySelector 查找 .trigger-content 下的 span（不依赖 id），或只更新 span 的 innerText
-            const span = wrapper.querySelector('.trigger-content span');
-            if (span) span.innerText = text;
-        }
-        document.addEventListener('click', e => {
-            const select = document.getElementById('account-select');
-            if (select && !select.contains(e.target)) select.classList.remove('open');
-        });
-
-        // 切换登录方式逻辑
-        function switchLogin(type, btn) {
-            document.querySelectorAll('.method-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            nfcinput='';lastnfcinput=-1;//切换方式时清空nfc输入缓存
-            document.querySelectorAll('.login-panel').forEach(p => p.style.display = 'none');
-            document.getElementById('login-' + type).style.display = 'block';
-        }
-
-        // 6位验证码输入框自动跳转逻辑
-        //movenext记录上次触发的输入框，增加冷静期，避免重复触发导致bugs
-        function moveNext(current, event) {
-            const inputs = Array.from(document.querySelectorAll('.code-input'));
-            const idx = inputs.indexOf(current);
-            if (idx === -1) return;
-
-            const key = event.key || '';
-
-            if (key === 'Backspace' || event.keyCode === 8) {
-                if (current.value && current.value.length > 0) {
-                    // 让浏览器正常删除当前输入的最后一个字符（无需额外处理）
-                    return;
-                }
-                // 当前为空：跳回上一个并删除其内容的最后一位
-                if (idx > 0) {
-                    const prev = inputs[idx - 1];
-                    // 删除上一个输入框的最后一个字符
-                    prev.value = prev.value.slice(0, -1);
-                    prev.focus();
-                    // 将光标移到末尾（兼容）
-                    try { prev.setSelectionRange(prev.value.length, prev.value.length); } catch (e) {}
-                }
-                return;
-            }
-
-            // 处理普通输入或粘贴（可能一次写入多字符）
-            const val = current.value || '';
-            if (val.length <= 1) {
-                // 单字符输入：自动跳到下一个可用输入
-                if (val.length === 1 && idx < inputs.length - 1) {
-                    inputs[idx + 1].focus();
-                    try { inputs[idx + 1].setSelectionRange(inputs[idx + 1].value.length, inputs[idx + 1].value.length); } catch (e) {}
-                }
-            } else {
-                // 粘贴或超长输入：将多字符分发到当前及后续输入框
-                let k = 0;
-                for (let j = idx; j < inputs.length && k < val.length; j++, k++) {
-                    inputs[j].value = val.charAt(k);
-                }
-                // 清理：如果粘贴的字符少于后续已有内容，保留已覆盖的后续内容不变
-                // 聚焦到下一个空输入
-                for (let j = idx; j < inputs.length; j++) {
-                    if (!inputs[j].value) { inputs[j].focus(); return; }
-                }
-            }
-
-            // 检查是否全部填完，若全部有值则触发完成回调
-            let all = true;
-            let code = '';
-            for (let i = 0; i < inputs.length; i++) {
-                const v = inputs[i].value || '';
-                if (v.length === 0) { all = false; }
-                code += v;
-            }
-            if (all) {
-                //焦点移到最右边的
-                inputs[inputs.length - 1].focus();
-                // 若存在完成处理函数则调用
-                if (typeof onCodeComplete === 'function') onCodeComplete(code);
-            }
-        }
-
-        // 验证码填写完成的回调，默认会触发面板内第一个按钮（校验验证码）
-        async function onCodeComplete(code) {
-            const name = window.selectedAccountName || '';
-            if (!code) { alert('请输入验证码'); return; }
-            if (!name) { alert('请先选择账户'); return; }
-            setLoginUiDisabled(true);
-            try {
-                const res = await sendtoserver({ doing: 'totp_login', name: name, totp_code: code });
-                if (res && res.did === 'yes' && res.key) {
-                    window.localStorage.setItem('key', res.key);
-                    // 跳转回设置页
-                    window.location.href = './settings.html'+window.location.hash;
-                } else {
-                    window.showGlobalModal('登录失败', res.problem || '验证码错误');
-                }
-            } catch (e) {
-                window.showGlobalModal('网络错误', '无法连接到后端');
-            } finally {
-                setLoginUiDisabled(false);
-            }
-        }
-
-        // 登录实现：使用 settings/index.js 中的 sendtoserver
-        async function loginWithPassword() {
-            const name = window.selectedAccountName || '';
-            const pwd = document.getElementById('login-password-input').value || '';
-            if (!name) { alert('请先选择账户'); return; }
-            if (!pwd) { alert('请输入密码'); return; }
-            setLoginUiDisabled(true);
-            try {
-                const res = await sendtoserver({ doing: 'login', name: name, password: pwd });
-                if (res && res.did === 'yes' && res.key) {
-                    window.localStorage.setItem('key', res.key);
-                    // 跳转回设置页
-                    window.location.href = './settings.html'+window.location.hash;
-                } else {
-                    window.showGlobalModal('登录失败', res.problem || '用户名或密码错误');
-                }
-            } catch (e) {
-                window.showGlobalModal('网络错误', '无法连接到后端');
-            } finally {
-                setLoginUiDisabled(false);
-            }
-        }
-        
-        // --------- NFC 硬件扫描与切换逻辑（全部在本页内） ---------
-        let ndefReader = null;
-        let nfcHardwareMode = true; // true = 使用硬件扫描，false = 使用键盘输入x
-        const nfcToggleBtn = document.getElementById('nfc-toggle-mode');
-        const nfcStatusSpan = document.getElementById('nfc-status');
-        const nfcInstruction = document.getElementById('nfc-instruction');
-        if (!('NDEFReader' in window)) {
-            // 如果不支持 NFC，默认切换到键盘输入模式
-            nfcHardwareMode = false;
-            document.getElementById('truecard').style.display = 'none';
-            document.getElementById('nfc-toggle-mode').textContent = '切换到硬件扫描';
-            document.getElementById('nfc-instruction').textContent = '请使用键盘或刷卡器输入卡数据，然后按 Enter';
-            if (nfcStatusSpan) nfcStatusSpan.textContent = '状态：不支持硬件';
-        }
-
-        function updateNfcUi(stateText) {
-            if (nfcStatusSpan) nfcStatusSpan.textContent = '状态：' + stateText;
-        }
-
-        async function startHardwareNfc() {
-            if (!('NDEFReader' in window)) {
-                document.getElementById('truecard').style.display = 'none';
-                window.showGlobalModal && window.showGlobalModal('提示', '当前设备或浏览器不支持 Web NFC。');
-                return;
-            }
-            try {
-                updateNfcUi('请求权限...');
-                ndefReader = new NDEFReader();
-                await ndefReader.scan();
-                updateNfcUi('准备就绪，靠近卡片');
-                ndefReader.addEventListener('reading', onNfcReading);
-                ndefReader.addEventListener('readingerror', onNfcReadingError);
-            } catch (err) {
-                console.error('NFC 启动错误', err);
-                updateNfcUi('错误');
-                window.showGlobalModal && window.showGlobalModal('NFC 错误', err && err.message ? err.message : '无法启动 NFC');
-            }
-        }
-
-        function stopHardwareNfc() {
-            try {
-                if (ndefReader) {
-                    // NDEFReader 没有 stop 方法，移除监听并丢弃实例
-                    ndefReader.removeEventListener('reading', onNfcReading);
-                    ndefReader.removeEventListener('readingerror', onNfcReadingError);
-                    ndefReader = null;
-                }
-            } catch (e) { console.warn(e); }
-            updateNfcUi('已停止');
-        }
-
-        function onNfcReading(event) {
-            const serial = event.serialNumber || null;
-            updateNfcUi('已读取: ' + (serial || '未知'));
-            // 自动发送到后端校验（与键盘输入逻辑相同）
-            const name = window.selectedAccountName || '';
-            if (!name) { window.showGlobalModal && window.showGlobalModal('提示', '请先选择账户'); return; }
-            if (!serial) { window.showGlobalModal && window.showGlobalModal('NFC 错误', '未读取到序列号'); return; }
-            setLoginUiDisabled(true);
-            sendtoserver({ doing: 'login', user: name, card: serial }).then(res => {
-                if (res && res.did === 'yes' && res.key) {
-                    window.localStorage.setItem('key', res.key);
-                    window.location.href = './settings.html'+window.location.hash;
-                } else {
-                    window.showGlobalModal && window.showGlobalModal('登录失败', res && res.problem ? res.problem : 'NFC 校验失败');
-                }
-            }).catch(e => {
-                window.showGlobalModal && window.showGlobalModal('网络错误', '无法连接到后端');
-            }).finally(() => {
-                setLoginUiDisabled(false);
-            });
-        }
-
-        function onNfcReadingError() {
-            updateNfcUi('读取错误');
-            window.showGlobalModal && window.showGlobalModal('NFC 读取错误', '读取失败，请重试');
-        }
-
-        // 切换硬件/键盘输入模式
-        if (nfcToggleBtn) {
-            nfcToggleBtn.addEventListener('click', () => {
-                nfcHardwareMode = !nfcHardwareMode;
-                if (nfcHardwareMode) {
-                    nfcToggleBtn.textContent = '切换到键盘输入';
-                    nfcInstruction.textContent = '请将安全感应卡贴近设备';
-                    startHardwareNfc();
-                } else {
-                    nfcToggleBtn.textContent = '切换到硬件扫描';
-                    nfcInstruction.textContent = '请使用键盘或刷卡器输入卡数据，然后按 Enter';
-                    stopHardwareNfc();
-                }
-            });
-        }
-
-        // 实现逻辑关于刷卡登录（键盘输入回退）
-        window.addEventListener('keydown',async function noting(params) {
-            if(Date.now()-lastnfcinput>10000) nfcinput=params.key;//超过10秒未输入则重置输入
-            lastnfcinput=Date.now();
-            if(document.getElementById('login-card').style.display=='none') return;
-            // 如果当前在硬件模式，不处理键盘构建（避免干扰），除非用户切换到键盘模式
-            if (nfcHardwareMode) return;
-            if(params.key=='Enter'){
-                alert(nfcinput);
-                nfcinput='';
-            }
-            nfcinput=nfcinput+params.key;
+    // 如果 datas 是对象，直接合并 timestamp 并发送 JSON
+    if (typeof datas === 'object' && datas !== null) {
+        const bodyObj = Object.assign({}, datas, { timestamp });
+        return fetch(web, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(bodyObj)
         })
-    </script>
-</body>
-</html>
+        .then(async response => {
+            const txt = await response.text();
+            try { return JSON.parse(txt); } catch(e) { return txt; }
+        }).catch(error => ({ error: String(error) }));
+    }
+
+    // 如果 datas 是字符串：优先尝试解析为 JSON；解析失败则直接在原始字符串中插入 timestamp（不做嵌套）
+    if (typeof datas === 'string') {
+        const ts = timestamp;
+        const trimmed = datas.trim();
+
+        // 先尝试直接解析为合法 JSON
+        try {
+            const parsed = JSON.parse(trimmed);
+            if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
+                const bodyObj = Object.assign({}, parsed, { timestamp: ts });
+                return fetch(web, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(bodyObj)
+                })
+                .then(async response => {
+                    const txt = await response.text();
+                    try { return JSON.parse(txt); } catch(e) { return txt; }
+                }).catch(error => ({ error: String(error) }));
+            }
+        } catch (e) {
+            // 忽略，后续尝试更宽松的解析
+        }
+
+        // 移除外层大括号（若存在），然后解析 key:value 列表，支持单引号或未加引号的 key
+        let inner = trimmed.replace(/^\{\s*|\s*\}$/g, '');
+
+        function parseLooseObject(s) {
+            const obj = {};
+            if (!s.trim()) return obj;
+            // 按逗号拆分（简单场景），再按第一个冒号切分 key/value
+            const parts = s.split(',');
+            for (let part of parts) {
+                const idx = part.indexOf(':');
+                if (idx === -1) continue;
+                let key = part.slice(0, idx).trim();
+                let val = part.slice(idx + 1).trim();
+                // 去除引号
+                key = key.replace(/^['"]|['"]$/g, '');
+                // 处理 value
+                if (/^['"]/.test(val) && /['"]$/.test(val)) {
+                    val = val.replace(/^['"]|['"]$/g, '');
+                } else if (/^\d+$/.test(val)) {
+                    val = parseInt(val, 10);
+                } else if (/^\d+\.\d+$/.test(val)) {
+                    val = parseFloat(val);
+                } else if (/^(true|false)$/i.test(val)) {
+                    val = /^true$/i.test(val);
+                } else {
+                    // 去除可能残留的单引号
+                    val = val.replace(/^['"]|['"]$/g, '');
+                }
+                if (key) obj[key] = val;
+            }
+            return obj;
+        }
+
+        const parsedLoose = parseLooseObject(inner);
+        // 如果解析出至少一个键，认为成功
+        if (Object.keys(parsedLoose).length > 0) {
+            const bodyObj = Object.assign({}, parsedLoose, { timestamp: ts });
+            return fetch(web, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(bodyObj)
+            })
+            .then(async response => {
+                const txt = await response.text();
+                try { return JSON.parse(txt); } catch(e) { return txt; }
+            }).catch(error => ({ error: String(error) }));
+        }
+
+        // 最后兜底：发送 { "raw": <原始字符串>, "timestamp": ts }
+        const fallback = { raw: trimmed, timestamp: ts };
+        return fetch(web, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(fallback)
+        })
+        .then(async response => {
+            const txt = await response.text();
+            try { return JSON.parse(txt); } catch(e) { return txt; }
+        }).catch(error => ({ error: String(error) }));
+    }
+
+    // 其他类型（如 number、boolean 等），包装为 payload 字段并添加 timestamp
+    const fallback = { payload: datas, timestamp };
+    return fetch(web, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(fallback)
+    })
+    .then(async response => {
+        const txt = await response.text();
+        try { return JSON.parse(txt); } catch(e) { return txt; }
+    }).catch(error => ({ error: String(error) }));
+}
+
+window.showGlobalModal = function(title, body) {
+    const m = document.getElementById('globalModal'); if (!m) return;
+    document.getElementById('globalModalTitle').textContent = title || '提示';
+    document.getElementById('globalModalBody').innerHTML = body || '';
+    m.classList.add('show');
+};
+window.hideGlobalModal = function() {
+    const m = document.getElementById('globalModal'); if (m) m.classList.remove('show');
+};
+//document.addEventListener('click', (e) => { if (e.target && e.target.id === 'globalModalClose') hideGlobalModal(); });
+// 登录过程禁用所有按钮并设置not-allowed光标
+function setLoginUiDisabled(disabled) {
+	const form = document.getElementById('form-container');
+	const methods = document.querySelector('.login-methods-row');
+	if (form) {
+		if (disabled) {
+			form.classList.add('login-disabled');
+		} else {
+			form.classList.remove('login-disabled');
+		}
+		// 禁用form内所有按钮和输入
+		form.querySelectorAll('button, input, select, textarea').forEach(el => {
+			if (el.tagName === 'BUTTON' || el.tagName === 'INPUT' || el.tagName === 'SELECT' || el.tagName === 'TEXTAREA') {
+				el.disabled = !!disabled;
+			}
+		});
+	}
+    document.getElementsByClassName('app-container')[0].style.cursor = disabled ? 'wait' : '';
+	if (methods) {
+		if (disabled) {
+			methods.classList.add('login-disabled');
+		} else {
+			methods.classList.remove('login-disabled');
+		}
+		methods.querySelectorAll('button').forEach(el => { el.disabled = !!disabled; });
+	}
+}

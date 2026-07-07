@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>纯数字密钥加密工具 (AES-GCM)</title>
+  <style>
+    :root { --bg: #f5f7fa; --card: #fff; --primary: #4f46e5; --border: #d1d5db; --text: #1f2937; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; padding: 20px; }
+    .container { max-width: 800px; margin: 0 auto; }
+    h1 { text-align: center; margin-bottom: 24px; font-size: 1.5rem; }
+    .card { background: var(--card); border-radius: 12px; padding: 20px; margin-bottom: 16px; box-shadow: 0 1px 3px rgba(0,0,0,.08); }
+    .card h2 { font-size: 1.05rem; margin-bottom: 12px; color: var(--primary); }
+    label { display: block; font-weight: 600; margin-bottom: 4px; font-size: .88rem; }
+    textarea { width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 8px; font-family: monospace; font-size: .85rem; resize: vertical; min-height: 80px; margin-bottom: 8px;}
+    input[type="text"] { width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 8px; font-family: monospace; font-size: .9rem; margin-bottom: 8px; letter-spacing: 2px;}
+    button { background: var(--primary); color: #fff; border: none; padding: 10px 24px; border-radius: 8px; cursor: pointer; font-size: .9rem; transition: opacity .2s; }
+    button:hover { opacity: .85; }
+    button.decrypt-btn { background: #0891b2; }
+    .status { margin-top: 8px; font-size: .82rem; padding: 8px 12px; border-radius: 6px; display: none; word-break: break-all;}
+    .status.ok { display: block; background: #d1fae5; color: #065f46; }
+    .status.err { display: block; background: #fee2e2; color: #991b1b; }
+    .warn { background: #fef3c7; color: #92400e; padding: 12px; border-radius: 8px; font-size: .85rem; margin-bottom: 16px; }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h1>🔢 纯数字密钥加密工具</h1>
+
+  <div class="warn">
+    ⚠️ <strong>原理说明</strong>：纯数字无法直接作为非对称(RSA)私钥。本工具使用行业标准方案：将你输入的数字作为口令，通过 PBKDF2 派生出 AES-256-GCM 对称密钥进行加密。<br>
+    🔒 所有计算均在浏览器本地完成，不上传任何数据。请勿使用过短的数字保护重要信息。
+  </div>
+
+  <!-- 1. 加密功能区 -->
+  <div class="card">
+    <h2>① 加密内容</h2>
+    <label for="encKey">加密密钥（纯阿拉伯数字）</label>
+    <input type="text" id="encKey" placeholder="例如: 8826070412345678" pattern="\d+" title="仅允许输入纯数字">
+
+    <label for="plainText">要加密的内容</label>
+    <textarea id="plainText" placeholder="输入任意文本，无长度限制"></textarea>
+
+    <button onclick="doEncrypt()">🔒 加密</button>
+
+    <label for="cipherOutput" style="margin-top:12px;">加密结果（Base64）</label>
+    <textarea id="cipherOutput" readonly placeholder="加密成功后显示"></textarea>
+    <div id="encStatus" class="status"></div>
+  </div>
+
+  <!-- 2. 解密功能区 -->
+  <div class="card">
+    <h2>② 解密内容</h2>
+    <label for="decKey">解密密钥（纯阿拉伯数字）</label>
+    <input type="text" id="decKey" placeholder="必须与加密时使用的数字完全一致" pattern="\d+">
+
+    <label for="cipherInput">待解密的密文（Base64）</label>
+    <textarea id="cipherInput" placeholder="粘贴上方生成的加密结果"></textarea>
+
+    <button class="decrypt-btn" onclick="doDecrypt()">🔓 解密并校验</button>
+
+    <label for="decOutput" style="margin-top:12px;">解密结果</label>
+    <textarea id="decOutput" readonly placeholder="解密成功后显示"></textarea>
+    <div id="decStatus" class="status"></div>
+  </div>
+</div>
+
+<script>
+  // ==================== 核心加密逻辑 ====================
+  const SALT = new TextEncoder().encode("CustomNumberKey-Salt-v1"); // 固定盐值，确保相同数字生成相同密钥
+
+  // 将纯数字字符串派生为 AES-256-GCM CryptoKey
+  async function deriveKeyFromNumber(numberStr) {
+    if (!/^\d+$/.test(numberStr)) throw new Error("密钥必须为纯阿拉伯数字");
+
+    const keyMaterial = await crypto.subtle.importKey(
+            "raw",
+            new TextEncoder().encode(numberStr),
+            "PBKDF2",
+            false,
+            ["deriveKey"]
+    );
+
+    return crypto.subtle.deriveKey(
+            { name: "PBKDF2", salt: SALT, iterations: 600000, hash: "SHA-256" },
+            keyMaterial,
+            { name: "AES-GCM", length: 256 },
+            false,
+            ["encrypt", "decrypt"]
+    );
+  }
+
+  function bufToBase64(buf) {
+    let bin = "";
+    const bytes = new Uint8Array(buf);
+    for (let i = 0; i < bytes.length; i++) bin += String.fromCharCode(bytes[i]);
+    return btoa(bin);
+  }
+
+  function base64ToBuf(b64) {
+    const bin = atob(b64.trim());
+    const bytes = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+    return bytes.buffer;
+  }
+
+  function showStatus(id, msg, ok) {
+    const el = document.getElementById(id);
+    el.textContent = msg;
+    el.className = "status " + (ok ? "ok" : "err");
+  }
+
+  // ==================== 加密操作 ====================
+  async function doEncrypt() {
+    try {
+      const keyStr = document.getElementById("encKey").value.trim();
+      const plain = document.getElementById("plainText").value;
+
+      if (!keyStr) throw new Error("请输入加密密钥");
+      if (!plain) throw new Error("请输入要加密的内容");
+
+      const key = await deriveKeyFromNumber(keyStr);
+      const iv = crypto.getRandomValues(new Uint8Array(12)); // GCM 推荐 12字节 IV
+
+      const encrypted = await crypto.subtle.encrypt(
+              { name: "AES-GCM", iv: iv },
+              key,
+              new TextEncoder().encode(plain)
+      );
+
+      // 将 IV 拼接在密文前面一起输出，解密时需要提取
+      const combined = new Uint8Array(iv.length + encrypted.byteLength);
+      combined.set(iv, 0);
+      combined.set(new Uint8Array(encrypted), iv.length);
+
+      document.getElementById("cipherOutput").value = bufToBase64(combined);
+      showStatus("encStatus", "✅ 加密成功！请将密文和数字密钥妥善保管", true);
+    } catch (e) {
+      showStatus("encStatus", "❌ " + e.message, false);
+    }
+  }
+
+  // ==================== 解密 + 一致性校验 ====================
+  async function doDecrypt() {
+    try {
+      const keyStr = document.getElementById("decKey").value.trim();
+      const cipherB64 = document.getElementById("cipherInput").value.trim();
+
+      if (!keyStr) throw new Error("请输入解密密钥");
+      if (!cipherB64) throw new Error("请输入待解密的密文");
+
+      const combined = new Uint8Array(base64ToBuf(cipherB64));
+      if (combined.length < 13) throw new Error("密文格式无效");
+
+      // 提取前12字节作为IV，剩余部分为密文
+      const iv = combined.slice(0, 12);
+      const ciphertext = combined.slice(12);
+
+      const key = await deriveKeyFromNumber(keyStr);
+
+      // AES-GCM 自带完整性校验：如果数字不对，decrypt 会直接抛出异常
+      const decrypted = await crypto.subtle.decrypt(
+              { name: "AES-GCM", iv: iv },
+              key,
+              ciphertext
+      );
+
+      document.getElementById("decOutput").value = new TextDecoder().decode(decrypted);
+      showStatus("decStatus", "✅ 解密成功！数字密钥与密文一致性校验通过", true);
+    } catch (e) {
+      // GCM 解密失败统一表现为 OperationError，我们转换为友好的校验失败提示
+      const isCryptoErr = e.name === "OperationError" || e.message.includes("decrypt");
+      if (isCryptoErr) {
+        showStatus("decStatus", "❌ 一致性校验失败：数字密钥不正确，或密文已被篡改", false);
+      } else {
+        showStatus("decStatus", "❌ " + e.message, false);
+      }
+    }
+  }
+
+  // 输入框限制只能输入数字
+  document.querySelectorAll('input[pattern="\\d+"]').forEach(input => {
+    input.addEventListener("input", function() {
+      this.value = this.value.replace(/\D/g, '');
+    });
+  });
+</script>
+</body>
+</html>

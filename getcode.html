@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>动态验证码 - 获取验证代码</title>
+    <style>
+        /* ========== 全局重置 & 基础 ========== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-dark:    #0f0c29;
+            --bg-mid:     #302b63;
+            --bg-light:   #24243e;
+            --card-bg:    rgba(26, 26, 46, 0.85);
+            --text:       #e0e0e0;
+            --text-dim:   #808080;
+            --text-hint:  #505050;
+            --accent:     #00ff88;
+            --warn:       #ffaa00;
+            --error:      #ff4444;
+            --border:     rgba(255, 255, 255, 0.08);
+        }
+
+        html, body {
+            width: 100%;
+            min-height: 100vh;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
+                         "PingFang SC", "Microsoft YaHei", sans-serif;
+            color: var(--text);
+            background: linear-gradient(160deg, var(--bg-dark) 0%,
+                        var(--bg-mid) 50%, var(--bg-light) 100%);
+            background-attachment: fixed;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* ========== 巨重从上到下响应式布局 ========== */
+        .container {
+            width: 100%;
+            max-width: 640px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;   /* 从上到下堆叠 */
+            align-items: center;
+            padding: 40px 24px;
+            gap: 28px;
+        }
+
+        /* ========== 顶部标题 ========== */
+        .header {
+            text-align: center;
+            width: 100%;
+        }
+
+        .header h1 {
+            font-size: clamp(24px, 5vw, 36px);
+            font-weight: 800;
+            letter-spacing: 2px;
+            margin-bottom: 8px;
+            background: linear-gradient(90deg, var(--accent), #4fc3f7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header p {
+            font-size: 13px;
+            color: var(--text-dim);
+            letter-spacing: 1px;
+        }
+
+        /* ========== 验证码展示卡片（核心区域） ========== */
+        .code-card {
+            width: 100%;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 48px 32px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+            animation: fadeInUp 0.6s ease;
+        }
+
+        .code-label {
+            font-size: 14px;
+            color: var(--text-dim);
+            margin-bottom: 20px;
+            letter-spacing: 1px;
+        }
+
+        /* 正常显示的验证码 —— 巨大醒目 */
+        .code-display {
+            font-family: "Courier New", "SF Mono", monospace;
+            font-size: clamp(48px, 12vw, 80px);
+            font-weight: 900;
+            letter-spacing: 12px;
+            color: var(--accent);
+            text-shadow: 0 0 30px rgba(0, 255, 136, 0.4);
+            padding: 16px 0;
+            user-select: all;
+        }
+
+        /* 风控隐藏时显示的占位 */
+        .code-display.hidden {
+            color: var(--error);
+            text-shadow: 0 0 20px rgba(255, 68, 68, 0.3);
+            letter-spacing: 8px;
+        }
+
+        /* 风控原因提示 */
+        .risk-reason {
+            font-size: 13px;
+            color: var(--error);
+            margin-top: 16px;
+            line-height: 1.6;
+            opacity: 0.85;
+        }
+
+        /* 哈希信息 */
+        .hash-info {
+            margin-top: 24px;
+            font-size: 11px;
+            color: var(--text-hint);
+            font-family: monospace;
+            word-break: break-all;
+            line-height: 1.5;
+        }
+
+        /* ========== 引导区域 ========== */
+        .guide-section {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .guide-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text);
+            padding-left: 4px;
+        }
+
+        .guide-step {
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 20px;
+            transition: transform 0.2s, border-color 0.2s;
+        }
+
+        .guide-step:hover {
+            transform: translateX(4px);
+            border-color: rgba(0, 255, 136, 0.2);
+        }
+
+        .step-number {
+            flex-shrink: 0;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent), #4fc3f7);
+            color: #0f0c29;
+            font-size: 16px;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .step-content h3 {
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 4px;
+            color: var(--text);
+        }
+
+        .step-content p {
+            font-size: 13px;
+            color: var(--text-dim);
+            line-height: 1.5;
+        }
+
+        /* ========== 底部信息 ========== */
+        .footer {
+            margin-top: auto;
+            padding-top: 32px;
+            text-align: center;
+            font-size: 11px;
+            color: var(--text-hint);
+            line-height: 1.8;
+        }
+
+        .footer .dot {
+            margin: 0 6px;
+            opacity: 0.5;
+        }
+
+        /* ========== 动画 ========== */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+
+        /* ========== 响应式适配 ========== */
+        @media (max-width: 480px) {
+            .container {
+                padding: 24px 16px;
+                gap: 20px;
+            }
+            .code-card {
+                padding: 32px 16px;
+                border-radius: 16px;
+            }
+            .guide-step {
+                padding: 16px;
+                gap: 12px;
+            }
+            .step-number {
+                width: 30px;
+                height: 30px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <!-- ========== 顶部标题 ========== -->
+    <div class="header">
+        <h1>动态验证码</h1>
+        <p>Dynamic Verification Code</p>
+    </div>
+
+    <!-- ========== 验证码展示卡片 ========== -->
+    <div class="code-card">
+        <div class="code-label">您的 6 位验证代码</div>
+        <div class="code-display" id="codeDisplay">------</div>
+        <div class="risk-reason" id="riskReason" style="display:none;"></div>
+        <div class="hash-info" id="hashInfo"></div>
+    </div>
+
+    <!-- ========== 引导步骤 ========== -->
+    <div class="guide-section">
+        <div class="guide-title">如何完成验证</div>
+
+        <div class="guide-step">
+            <div class="step-number">1</div>
+            <div class="step-content">
+                <h3>打开验证程序</h3>
+                <p>在电脑端启动 verity.py 验证程序，界面将显示动态二维码。</p>
+            </div>
+        </div>
+
+        <div class="guide-step">
+            <div class="step-number">2</div>
+            <div class="step-content">
+                <h3>扫描二维码</h3>
+                <p>使用手机扫描程序左侧的二维码，将自动跳转至本页面获取验证码。</p>
+            </div>
+        </div>
+
+        <div class="guide-step">
+            <div class="step-number">3</div>
+            <div class="step-content">
+                <h3>获取验证码</h3>
+                <p>本页面根据二维码中的哈希值实时计算出 6 位数字验证码（如上方所示）。</p>
+            </div>
+        </div>
+
+        <div class="guide-step">
+            <div class="step-number">4</div>
+            <div class="step-content">
+                <h3>输入验证码</h3>
+                <p>在电脑端验证程序的输入框中输入 6 位数字，输入完成后将自动提交校验。</p>
+            </div>
+        </div>
+
+        <div class="guide-step">
+            <div class="step-number">5</div>
+            <div class="step-content">
+                <h3>验证结果</h3>
+                <p>验证通过则显示成功提示；若验证码错误，程序将在 3 秒后提示密码错误。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== 底部信息 ========== -->
+    <div class="footer">
+        验证码每分钟自动刷新<span class="dot">·</span>支持当前分钟及上一分钟验证码<span class="dot">·</span>备用验证码已内置
+        <br>
+        getcode.html<span class="dot">·</span>动态验证码系统
+    </div>
+
+</div>
+
+<script>
+    // ============================================================
+    //  核心计算函数 —— 与 verity.py 中的算法完全一致
+    // ============================================================
+
+    /**
+     * 从 SHA256 哈希计算 6 位验证码
+     * 算法: 将 64 位十六进制哈希转为 BigInt，取模 1000000，格式化为 6 位数字
+     *
+     * @param {string} sha256Hash - 64 字符的十六进制 SHA256 字符串
+     * @returns {string} 6 位数字验证码
+     */
+    function calculateVerificationCode(sha256Hash) {
+        if (!sha256Hash || !/^[0-9a-fA-F]{64}$/.test(sha256Hash)) {
+            return null;
+        }
+        // 使用 BigInt 处理 256 位大整数
+        var hashBigInt = BigInt('0x' + sha256Hash);
+        var codeBigInt = hashBigInt % 1000000n;
+        var code = Number(codeBigInt);
+        return code.toString().padStart(6, '0');
+    }
+
+    /**
+     * 从 URL 中提取哈希值
+     * URL 格式: https://www.example.com/getcode#{sha256}
+     * 哈希在 URL fragment（# 之后）中
+     */
+    function extractHash() {
+        var hash = window.location.hash;
+        if (hash && hash.length > 1) {
+            // 去掉开头的 #
+            return hash.substring(1).trim();
+        }
+        return null;
+    }
+
+    /**
+     * 风控检查
+     * 条件1: 用户未提供哈希（直接访问页面，未通过二维码扫描）
+     * 条件2: 设备分辨率小于 700x700
+     * 满足任意一个即触发风控隐藏
+     *
+     * @returns {{blocked: boolean, reason: string}}
+     */
+    function checkRiskControl(hash) {
+        // 条件1: 无哈希
+        if (!hash) {
+            return {
+                blocked: true,
+                reason: '风控拦截: 未检测到验证哈希，请通过扫描二维码访问本页面。'
+            };
+        }
+
+        // 条件2: 分辨率不足 700x700
+        var screenWidth = window.screen.width;
+        var screenHeight = window.screen.height;
+        var viewportWidth = window.innerWidth;
+        var viewportHeight = window.innerHeight;
+
+        if (screenWidth < 700 || screenHeight < 700 ||
+            viewportWidth < 700 || viewportHeight < 700) {
+            return {
+                blocked: true,
+                reason: '风控拦截: 设备分辨率不足 700×700，为安全起见验证码已隐藏。\n' +
+                        '当前分辨率: ' + screenWidth + '×' + screenHeight +
+                        ' (视口: ' + viewportWidth + '×' + viewportHeight + ')'
+            };
+        }
+
+        return { blocked: false, reason: '' };
+    }
+
+    // ============================================================
+    //  页面初始化
+    // ============================================================
+
+    function init() {
+        var codeDisplay = document.getElementById('codeDisplay');
+        var riskReason = document.getElementById('riskReason');
+        var hashInfo = document.getElementById('hashInfo');
+
+        var hash = extractHash();
+        var riskResult = checkRiskControl(hash);
+
+        if (riskResult.blocked) {
+            // 风控触发 —— 显示 XXXXXX 和原因
+            codeDisplay.textContent = 'XXXXXX';
+            codeDisplay.classList.add('hidden', 'pulse');
+            riskReason.textContent = riskResult.reason;
+            riskReason.style.display = 'block';
+            hashInfo.textContent = '';
+        } else {
+            // 正常显示 —— 计算并展示验证码
+            var code = calculateVerificationCode(hash);
+            if (code) {
+                codeDisplay.textContent = code;
+                hashInfo.textContent = '哈希: ' + hash.substring(0, 32) + '...';
+            } else {
+                codeDisplay.textContent = 'XXXXXX';
+                codeDisplay.classList.add('hidden');
+                riskReason.textContent = '错误: 哈希格式无效，无法计算验证码。';
+                riskReason.style.display = 'block';
+            }
+        }
+    }
+
+    // 窗口尺寸变化时重新检查风控
+    var resizeTimer = null;
+    window.addEventListener('resize', function() {
+        if (resizeTimer) clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(init, 200);
+    });
+
+    // 页面加载完成后初始化
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+    } else {
+        init();
+    }
+</script>
+
+</body>
+</html>
